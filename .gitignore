@@ -2,3 +2,6 @@
 ideas.txt
 .idea
 .vscode
+ssh.ps1
+developers.py
+*.sh

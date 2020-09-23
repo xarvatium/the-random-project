@@ -6,26 +6,10 @@ from dotenv import load_dotenv
 client = commands.Bot(command_prefix=';', help_command=None)
 tracemalloc.start()
 
-def check_me(ctx):
-    return ctx.message.author.id == 514866599400833034
-
-randdict = {
-    
-}
-
 @client.event
 async def on_ready():
-    print('We have logged in as {0.user}'.format(client))
+    print('Logged in as {0.user}'.format(client))
     await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="randomness unfold | ;"))
-
-# @client.command()
-# async def random_article(ctx):
-    # wikipage = wikipedia.random(1)
-    # wikiload = wikipedia.page(wikipage)
-    # wikiEmbed = discord.Embed(title=wikipedia.page(wikipage).title, description=wikipedia.summary(wikipage), color=0xd1d1d1)
-    # wikiEmbed.add_field(name="URL", value=wikiload.url, inline=False)
-    # await ctx.channel.send(embed=wikiEmbed)
-    # print("Sent Wiki Article")
 
 @client.command()
 async def help(ctx):
@@ -36,33 +20,39 @@ async def help(ctx):
 
 @client.group()
 async def random(ctx):
-    if ctx.invoked.subcommand is None:
-        await ctx.send('Error: must include what to randomly generate.')
+    if ctx.invoked_subcommand is None:
+        await ctx.channel.send('Error: must include what to randomly generate.')
 
 @random.command()
 async def article(ctx):
-        wikipage = wikipedia.random(1)
-        wikiload = wikipedia.page(wikipage)
-        wikiEmbed = discord.Embed(title=wikipedia.page(wikipage).title, description=wikipedia.summary(wikipage), color=0xB87DDF)
-        wikiEmbed.add_field(name="URL", value=wikiload.url, inline=False)
+        wiki_page = wikipedia.random(1)
+        wiki_load = wikipedia.page(wiki_page)
+        wikiEmbed = discord.Embed(title=wikipedia.page(wiki_page).title, description=wikipedia.summary(wiki_page), color=0xB87DDF)
+        wikiEmbed.add_field(name="URL", value=wiki_load.url, inline=False)
         await ctx.channel.send(embed=wikiEmbed)
         print("Sent Wiki Article")
         
 @random.command()
-async def number(ctx, min = int, max = int):
+async def number(ctx, min: int, max: int):
+    errorEmbed = discord.Embed(title="Error:", description="There was an error! Did you make sure you included a minimum/maximum or to give numbers and not words?", color=0xB87DDF)
     try:
         ran = randint(min, max)
         numEmbed = discord.Embed(title="Random Number", description=ran, color=0xB87DDF)
         await ctx.channel.send(embed=numEmbed)
-    except:
-        await ctx.channel.send("There was an error! Did you make sure you included a minimum/maximum?")
+    except discord.Forbidden:
+        await ctx.channel.send(embed=errorEmbed)
 
 @client.command()
-async def status(ctx, *args):
-    if (ctx.message.author.id == 514866599400833034):
-        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=args))
-    elif (ctx.message.author.id != 514866599400833034):
-        await ctx.channel.send("Lol nice try nerd")
+async def status(ctx, arg):
+    import developers
+    dev_list = developers.dev_list["Developers"]["User IDs"]
+    if (ctx.message.author.id in dev_list):
+        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=arg))
+
+    else:
+        await ctx.channel.send("Placeholder")
+
+# The Token initialization
 load_dotenv()
 token = os.getenv('discord_token')
 client.run(token)
