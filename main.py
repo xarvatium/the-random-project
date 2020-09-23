@@ -43,14 +43,20 @@ async def number(ctx, min: int, max: int):
         await ctx.channel.send(embed=errorEmbed)
 
 @client.command()
-async def status(ctx, arg):
+async def status(ctx, *, content):
     import developers
     dev_list = developers.dev_list["Developers"]["User IDs"]
     if (ctx.message.author.id in dev_list):
-        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=arg))
+        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=content))
 
     else:
         await ctx.channel.send("Placeholder")
+@client.command()
+async def ping(ctx):
+    ping = client.latency * 1000
+    pingEmbed = discord.Embed(title="Pong! :ping_pong:", description=f"My latency is: {int(ping)}ms", color=0xB87DDF)
+    await ctx.send(embed=pingEmbed)
+
 
 # The Token initialization
 load_dotenv()
