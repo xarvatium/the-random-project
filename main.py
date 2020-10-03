@@ -22,6 +22,7 @@ async def on_ready():
         )
     )
 
+
 @client.group()
 async def random(ctx):
     if ctx.invoked_subcommand is None:
@@ -29,7 +30,10 @@ async def random(ctx):
 
 
 @client.command()
-async def pages(ctx):
+async def help(ctx):
+    page1embed = discord.Embed(title="Page 1",
+                               description="Placeholder"
+                               )
     contents = ["This is page 1!", "This is page 2!", "This is page 3!", "This is page 4!"]
     pages = 4
     cur_page = 1
@@ -71,7 +75,6 @@ async def pages(ctx):
             await message.delete()
             break
             # ending the loop if user doesn't react after x seconds
-
 
 
 @random.command()
@@ -123,7 +126,10 @@ async def ping(ctx):
 
 @client.command()
 async def monke(ctx):
-    await ctx.send("https://tenor.com/view/obese-monkey-fat-monkey-summer-belly-eating-lettuce-summer-look-gif-13014350")
+    await ctx.send(
+        "https://tenor.com/view/obese-monkey-fat-monkey-summer-belly-eating-lettuce-summer-look-gif-13014350"
+    )
+
 
 @client.command()
 async def repeat(ctx, *, user_in: str):
