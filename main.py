@@ -141,6 +141,6 @@ async def repeat(ctx, *, user_in: str):
 
 
 # The Token initialization
-load_dotenv()
-token = os.getenv('discord_token')
-client.run(token)
+with open('/home/pi/Desktop/token.txt','r') as token:
+    token1 = token.read()
+client.run(token1)
