@@ -79,18 +79,17 @@ async def help(ctx):
 
 @random.command()
 async def article(ctx):
-    async def ran_art():
-        wiki_page = wikipedia.random(1)
-        wiki_load = wikipedia.page(wiki_page)
-        wikiEmbed = discord.Embed(title=wikipedia.page(wiki_page).title,
-                                  description=wikipedia.summary(wiki_page),
-                                  color=0xB87DDF)
-        wikiEmbed.add_field(name="URL", value=wiki_load.url, inline=False)
-        try:
-            await ctx.channel.send(embed=wikiEmbed)
-            print("Sent Wiki Article")
-        except discord.Forbidden:
-            return ran_art()
+    wiki_page = wikipedia.random(1)
+    wiki_load = wikipedia.page(wiki_page)
+    wikiEmbed = discord.Embed(title=wikipedia.page(wiki_page).title,
+                              description=wikipedia.summary(wiki_page),
+                              color=0xB87DDF)
+    wikiEmbed.add_field(name="URL", value=wiki_load.url, inline=False)
+    try:
+        await ctx.channel.send(embed=wikiEmbed)
+        print("Sent Wiki Article")
+    except discord.Forbidden:
+        return ran_art()
 
 
 @random.command()
