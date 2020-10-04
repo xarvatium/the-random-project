@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 client = commands.Bot(command_prefix=';', help_command=None)
 tracemalloc.start()
 numError = "There was an error! Did you make sure you included a minimum/maximum or to give numbers and not words?"
-
+# test
 
 @client.event
 async def on_ready():
