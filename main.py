@@ -1,16 +1,21 @@
-import wikipedia
 import discord
 import tracemalloc
 import os
 import asyncio
+import random
+import youtube_dl
 from discord.ext import commands
-from random import *
 from dotenv import load_dotenv
-# test
+from random import choice
+
+
 client = commands.Bot(command_prefix=';', help_command=None)
 tracemalloc.start()
 numError = "There was an error! Did you make sure you included a minimum/maximum or to give numbers and not words?"
-# test 1
+
+# Imports the generate file
+from generate import *
+
 
 @client.event
 async def on_ready():
@@ -18,15 +23,9 @@ async def on_ready():
     await client.change_presence(
         activity=discord.Activity(
             type=discord.ActivityType.watching,
-            name="randomness unfold | ;"
+            name="In Maintenance | ;"
         )
     )
-
-
-@client.group()
-async def random(ctx):
-    if ctx.invoked_subcommand is None:
-        await ctx.channel.send('Error: must include what to randomly generate.')
 
 
 @client.command()
@@ -75,34 +74,6 @@ async def help(ctx):
             await message.delete()
             break
             # ending the loop if user doesn't react after x seconds
-
-
-@random.command()
-async def article(ctx):
-    wiki_page = wikipedia.random(1)
-    wiki_load = wikipedia.page(wiki_page)
-    wikiEmbed = discord.Embed(title=wikipedia.page(wiki_page).title,
-                              description=wikipedia.summary(wiki_page),
-                              color=0xB87DDF)
-    wikiEmbed.add_field(name="URL", value=wiki_load.url, inline=False)
-    try:
-        await ctx.channel.send(embed=wikiEmbed)
-        print("Sent Wiki Article")
-    except discord.Forbidden:
-        return ran_art()
-
-
-@random.command()
-async def number(ctx, low: int, high: int):
-    errorEmbed = discord.Embed(title="Error:",
-                               description=numError,
-                               color=0xB87DDF)
-    try:
-        ran = randint(low, high)
-        numEmbed = discord.Embed(title="Random Number", description=ran, color=0xB87DDF)
-        await ctx.channel.send(embed=numEmbed)
-    except discord.Forbidden:
-        await ctx.channel.send(embed=errorEmbed)
 
 
 @client.command()
