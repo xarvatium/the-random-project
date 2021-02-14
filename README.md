@@ -26,7 +26,6 @@ This is self-explanatory really. It just provides you the bot's latency.
 - [x] Added a few developer-only commands
 - [ ] Maybe add a random Urban Dictionary definition for channels marked nsfw(?)
 - [ ] Add a r/all puller for only channels marked nsfw (with a possibility for ignoring nsfw posts in sfw channels)
-- [ ] 
 
 ### Sources:
 [Discord.py documentation](https://discordpy.readthedocs.io/en/latest/) <br/>
