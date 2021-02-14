@@ -5,19 +5,28 @@ Hello, and welcome to the GitHub page for the Random Bot. If you're curious as t
 ### The Random Commands
 There are 2 random commands for right now:
 ##### Article
-- This gives you a random wikipedia article with a title, summary, and url
+ - This gives you a random wikipedia article with a title, summary, and url
 ##### Number
  - This gives you a number from a min/max that you **must** provide or the bot will give an error
+##### Video
+ - This gives you a random video from YouTube
+##### Color
+ - This presents a random color w/ Hex and RGB formatting (might add CMYK for the kicks)
 
 ### Ping
 This is self-explanatory really. It just provides you the bot's latency.
 
 ### Roadmap:
-- [x] Incorporate the Random Wikipedia Article generator
+- [x] Incorporate a homebrew Random Wikipedia Article generator
 - [x] Include a basic random number generator
 - [x] Include a ping command that displays the bot's latency
-- [ ] Add a random YouTube video generator
+- [x] Add a random YouTube video generator
+- [x] Added a new random color feature
+- [x] Streamlined the Help command in order to ensure legibility
+- [x] Added a few developer-only commands
 - [ ] Maybe add a random Urban Dictionary definition for channels marked nsfw(?)
+- [ ] Add a r/all puller for only channels marked nsfw (with a possibility for ignoring nsfw posts in sfw channels)
+- [ ] 
 
 ### Sources:
 [Discord.py documentation](https://discordpy.readthedocs.io/en/latest/) <br/>
