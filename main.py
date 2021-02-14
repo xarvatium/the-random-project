@@ -90,6 +90,7 @@ async def ask(ctx, *, content):
     await ctx.channel.send(answer)
 
 # The Token initialization
-load_dotenv()
-token = os.getenv('discord_token')
-bot.run(token)
+with open("token.txt", 'r') as token:
+    token1 = token.read()
+bot.run(token1)
+
