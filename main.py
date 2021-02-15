@@ -55,7 +55,7 @@ async def status(ctx, *, content):
 @bot.command()
 async def ping(ctx):
     ping = bot.latency * 1000
-    pingEmbed = discord.Embed(title="Pong! :ping_pong:", description=f"My latency is: {int(ping)}ms", color=0xB87DDF)
+    pingEmbed = discord.Embed(title="Pong! :ping_pong:", description=f"My latency is: **{int(ping)}ms**", color=0xB87DDF)
     await ctx.send(embed=pingEmbed)
 
 

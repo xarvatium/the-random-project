@@ -10,7 +10,7 @@ import requests
 import json # Used for parsing the last.fm API responses
 from time import time # Used for getting the current time to avoid rate limiting
 
-bot = commands.Bot(command_prefix=';', help_command=None)
+bot = commands.Bot(command_prefix='=', help_command=None)
 
 # Set a couple of variables that need to be global and persistent for random song
 lastfm_update = 0
@@ -32,7 +32,7 @@ async def on_ready():
 @bot.group()
 async def generate(ctx):
     if ctx.invoked_subcommand is None:
-        nullEmbed = discord.Embed(title="Error", description="Please include what to generate randomly. If you don't know what this is, use the ;help command!", color=0xB87DDF)
+        nullEmbed = discord.Embed(title="Error", description="Please include what to generate randomly. If you don't know what this is, use the ;help command!", color=0xC73333)
         await ctx.channel.send(embed=nullEmbed)
 
 
@@ -55,6 +55,7 @@ async def article(ctx):
 # Generates a random number between the <low> and the <high> given by the user
 @generate.command()
 async def number(ctx, low: int, high: int):
+    # The error it gives if there is no high or low
     numError = "There was an error! Did you make sure you included a minimum/maximum or to give numbers and not words?"
     errorEmbed = discord.Embed(title="Error:",
                                description=numError,
