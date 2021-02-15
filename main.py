@@ -6,6 +6,14 @@ from dotenv import load_dotenv
 
 from generate import *
 
+@bot.event
+async def on_guild_join(self):
+    servers = list(bot.guilds)
+    channel = bot.get_channel(756684141470154901)
+    joinServerEmbed = discord.Embed(title="Added to a new server!", description=f"New Server Total: **{str(len(servers))}**")
+    await channel.send(embed=joinServerEmbed)
+
+
 @bot.command()
 async def help(ctx):
     helpEmbed = discord.Embed(title="Help Page",

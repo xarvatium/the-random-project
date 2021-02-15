@@ -21,9 +21,8 @@ lastfm_tracklist = []
 async def on_ready():
     print('Logged in as {0.user}'.format(bot))
     await bot.change_presence(
-        activity=discord.Activity(
-            type=discord.ActivityType.watching,
-            name="Randomness | ;"
+        activity=discord.Game(
+            name=";help || with a magic 8ball"
         )
     )
 
