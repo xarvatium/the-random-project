@@ -3,7 +3,7 @@ Hello, and welcome to the GitHub page for the Random Bot. If you're curious as t
 
 
 ### The Random Commands
-There are 2 random commands for right now:
+There are 5 random commands for right now:
 ##### Article
  - This gives you a random wikipedia article with a title, summary, and url
 ##### Number
@@ -12,6 +12,8 @@ There are 2 random commands for right now:
  - This gives you a random video from YouTube
 ##### Color
  - This presents a random color w/ Hex and RGB formatting (might add CMYK for the kicks)
+##### Song
+ - This gives you a random song from the top 50 songs of the top 50 tags of last.fm
 
 ### Ping
 This is self-explanatory really. It just provides you the bot's latency.
@@ -24,6 +26,7 @@ This is self-explanatory really. It just provides you the bot's latency.
 - [x] Added a new random color feature
 - [x] Streamlined the Help command in order to ensure legibility
 - [x] Added a few developer-only commands
+- [x] Added a random song generator
 - [ ] Maybe add a random Urban Dictionary definition for channels marked nsfw(?)
 - [ ] Add a r/all puller for only channels marked nsfw (with a possibility for ignoring nsfw posts in sfw channels)
 
