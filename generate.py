@@ -1,8 +1,8 @@
-#import wikipedia
+import wikipedia
 import discord
 from random import *
 from discord.ext import commands
-#from googleapiclient.discovery import build
+from googleapiclient.discovery import build
 from PIL import Image
 from keys import *
 import os
@@ -10,7 +10,7 @@ import requests
 import json # Used for parsing the last.fm API responses
 from time import time # Used for getting the current time to avoid rate limiting
 
-bot = commands.Bot(command_prefix=')', help_command=None)
+bot = commands.Bot(command_prefix=';', help_command=None)
 
 # Set a couple of variables that need to be global and persistent for random song
 lastfm_update = 0
