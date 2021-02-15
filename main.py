@@ -9,7 +9,7 @@ from generate import *
 @bot.event
 async def on_guild_join(self):
     servers = list(bot.guilds)
-    channel = bot.get_channel(756684141470154901)
+    channel = bot.get_channel(811010228945682432)
     joinServerEmbed = discord.Embed(title="Added to a new server!", description=f"New Server Total: **{str(len(servers))}**")
     await channel.send(embed=joinServerEmbed)
 
