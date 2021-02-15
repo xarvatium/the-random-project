@@ -110,7 +110,7 @@ async def servers(ctx):
     import developers
     servers = list(bot.guilds)
     serversEmbedTitle = f"Connected on {str(len(servers))} servers"
-    serversEmbedDesc = "- " + '\n-'.join(guild.name for guild in servers)
+    serversEmbedDesc = "- " + '\n- '.join(guild.name for guild in servers)
     dev_list = developers.dev_list["Developers"]["User IDs"]
     serversEmbed = discord.Embed(title=serversEmbedTitle, description=serversEmbedDesc, color=0xB87DDF)
 
