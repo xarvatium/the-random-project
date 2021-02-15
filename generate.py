@@ -10,7 +10,7 @@ import requests
 import json # Used for parsing the last.fm API responses
 from time import time # Used for getting the current time to avoid rate limiting
 
-bot = commands.Bot(command_prefix='=', help_command=None)
+bot = commands.Bot(command_prefix=';', help_command=None)
 
 # Set a couple of variables that need to be global and persistent for random song
 lastfm_update = 0
