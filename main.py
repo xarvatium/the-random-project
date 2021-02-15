@@ -45,11 +45,13 @@ async def help(ctx):
 async def status(ctx, *, content):
     import developers
     dev_list = developers.dev_list["Developers"]["User IDs"]
+    notDevEmbed = discord.Embed(title="Error",
+                              description="Sorry! It appears you don't have permission to use this command.",
+                              color=0xC73333)
     if ctx.message.author.id in dev_list:
         await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=content))
-
     else:
-        await ctx.channel.send("Sorry! It appears you don't have permission to use this command.")
+        await ctx.channel.send(embed=notDevEmbed)
 
 
 @bot.command()
@@ -67,17 +69,30 @@ async def monke(ctx):
 
 
 @bot.command()
-async def repeat(ctx, *, user_in: str):
-    if user_in.lower().startswith("im"):
-        await ctx.send("yea we know")
-    elif user_in.lower().startswith('i '):
-        await ctx.send("yea we know")
-    elif user_in.lower().startswith("i'm"):
-        await ctx.send("yea we know")
-    elif user_in.lower() == "@everyone":
-        await ctx.send("no :)")
+async def repeat(ctx, *, user_in=None):
+    footerMsg = str(ctx.author.mention)
+    repeatEmbed = discord.Embed(description=user_in, color=0xB87DDF)
+    repeatEmbed.add_field(name="Sent by:", value=footerMsg)
+    if user_in:
+        if user_in.lower().startswith("im"):
+            await ctx.send("yea we know")
+        elif user_in.lower().startswith('i '):
+            await ctx.send("yea we know")
+        elif user_in.lower().startswith("i'm"):
+            await ctx.send("yea we know")
+        elif user_in.lower() == "@everyone":
+            await ctx.send("no :)")
+        elif user_in.lower() == "@here":
+            await ctx.send("no :)")
+        else:
+            await ctx.send(embed=repeatEmbed)
     else:
-        await ctx.send(user_in)
+        noUserIn = discord.Embed(title="Error",
+                                    description="Sorry! It appears you didn't include something for me to repeat!",
+                                    color=0xC73333
+                                 )
+        await ctx.channel.send(embed=noUserIn)
+
 
 @bot.command()
 async def ask(ctx, *, content):
@@ -88,6 +103,25 @@ async def ask(ctx, *, content):
             "Don't count on it", "Outlook not so good", "My sources say no", "Very doubtful", "My reply is no"]
     answer = random.choice(responses)
     await ctx.channel.send(answer)
+
+
+@bot.command()
+async def servers(ctx):
+    import developers
+    servers = list(bot.guilds)
+    serversEmbedTitle = f"Connected on {str(len(servers))} servers"
+    serversEmbedDesc = "- " + '\n'.join(guild.name for guild in servers)
+    dev_list = developers.dev_list["Developers"]["User IDs"]
+    serversEmbed = discord.Embed(title=serversEmbedTitle, description=serversEmbedDesc, color=0xB87DDF)
+
+    notDevEmbed = discord.Embed(title="Error",
+                                description="Sorry! It appears you don't have permission to use this command.",
+                                color=0xC73333)
+    if ctx.message.author.id in dev_list:
+        await ctx.send(embed=serversEmbed)
+
+    else:
+        await ctx.channel.send(embed=notDevEmbed)
 
 # The Token initialization
 with open("token.txt", 'r') as token:
