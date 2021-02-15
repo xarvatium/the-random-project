@@ -27,7 +27,7 @@ async def help(ctx):
 
     def check(reaction, user):
         return user == ctx.author and str(reaction.emoji) in ["◀️", "▶️", "❌"]
-        # This makes sure nobody except the command sender can interact with the "menu"
+        # This makes sure nobody except the command sender can interact with the "menu".
 
     while True:
         try:
