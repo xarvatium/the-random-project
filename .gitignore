@@ -6,3 +6,5 @@ ssh.ps1
 developers.py
 keys.py
 *.sh
+token.txt
+__pycache__
