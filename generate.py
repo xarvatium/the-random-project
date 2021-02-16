@@ -1,10 +1,10 @@
-#import wikipedia
+import wikipedia
 import discord
 from random import *
 from discord.ext import commands
-#from googleapiclient.discovery import build # Used for parsing YouTube API requests
+from googleapiclient.discovery import build # Used for parsing YouTube API requests
 from PIL import Image
-#from keys import *
+from keys import *
 import os
 import requests
 import json # Used for parsing the last.fm API responses
