@@ -16,8 +16,7 @@ bot = commands.Bot(command_prefix=';', help_command=None)
 lastfm_update = 0
 lastfm_tracklist = []
 
-# Gives the even that tells the bot is up, also sets the status
-@bot.event
+@bot.event  # Sets status on start and prints that it's logged in
 async def on_ready():
     print('Logged in as {0.user}'.format(bot))
     await bot.change_presence(
@@ -27,16 +26,17 @@ async def on_ready():
     )
 
 
-# Sets the "generate" group for the ;generate <command> group
-@bot.group()
+@bot.group()  # Defines the ;generate group with an error message if no argument is provided
 async def generate(ctx):
     if ctx.invoked_subcommand is None:
-        nullEmbed = discord.Embed(title="Error", description="Please include what to generate randomly. If you don't know what this is, use the ;help command!", color=0xC73333)
+        nullEmbed = discord.Embed(title="Error",
+                                  description="Please include what to generate randomly. If you don't know what this is, use the ;help command!",
+                                  color=0xC73333
+                                  )
         await ctx.channel.send(embed=nullEmbed)
 
 
-# Generates a random Wikipedia article
-@generate.command()
+@generate.command()  # Random Wikipedia article Generator - Generates a random wikipedia article
 async def article(ctx):
     wiki_page = wikipedia.random(1)
     wiki_load = wikipedia.page(wiki_page)
@@ -51,8 +51,7 @@ async def article(ctx):
         await ctx.channel.send("The article you requested had a disambiguation, please try again.")
 
 
-# Generates a random number between the <low> and the <high> given by the user
-@generate.command()
+@generate.command()  # Random Number Generator - Generates a random number
 async def number(ctx, low: int=0, high: int=100):
     # The error it gives if there is no high or low
     numError = "There was an error! Did you make sure to give numbers and not words?"
@@ -67,8 +66,7 @@ async def number(ctx, low: int=0, high: int=100):
         await ctx.channel.send(embed=errorEmbed)
 
 
-# Generates a random YouTube video
-@generate.command()
+@generate.command()  # Random YouTube Video Generator - Gives a random YouTube video
 async def video(ctx):
     import random
 
@@ -104,8 +102,7 @@ async def video(ctx):
     print("Sent YT video")
 
 
-# Gives a random color sent in an embed and a file
-@generate.command()
+@generate.command()  # Random Color Generator - Sends in embed and gives a file w/ HEX and RGB codes
 async def color(ctx):
     # Defines the RGB to Hex function
     def rgb_to_hex(rgb):
@@ -138,8 +135,8 @@ async def color(ctx):
     print("Sent image")
     os.remove("color.png")
 
-# Grabs a random song from last.fm
-@generate.command()
+
+@generate.command()  # Grabs a random song from last.fm
 async def song(ctx, *, usertag=None):
     global lastfm_update # This variable will be used to update old data without making multiple requests every time, so it should persist
     global lastfm_tracklist # Will store the tracklist so it doesn't have to be called every time

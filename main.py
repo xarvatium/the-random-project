@@ -8,7 +8,7 @@ from generate import *
 import helpText
 
 @bot.event
-async def on_guild_join(self):
+async def on_guild_join(self):  # Logs when the bot joins a guild (does not log ID and name, so don't worry)
     servers = list(bot.guilds)
     channel = bot.get_channel(811010228945682432)
     joinServerEmbed = discord.Embed(title="Added to a new server!", description=f"New Server Total: **{str(len(servers))}**")
@@ -16,7 +16,7 @@ async def on_guild_join(self):
 
 
 @bot.command()
-async def help(ctx):
+async def help(ctx):  # The help command
     helpEmbed = discord.Embed(title="Help Page",
                               description="__Bot Prefix is: **;**__",
                               color=0xB87DDF
@@ -51,7 +51,7 @@ async def help(ctx):
 
 
 @bot.command()
-async def status(ctx, *, content):
+async def status(ctx, *, content):  # Developer command that changes the bot's status
     import developers
     dev_list = developers.dev_list["Developers"]["User IDs"]
     notDevEmbed = discord.Embed(title="Error",
@@ -64,49 +64,51 @@ async def status(ctx, *, content):
 
 
 @bot.command()
-async def ping(ctx):
+async def ping(ctx):  # ping command
     ping = bot.latency * 1000
     pingEmbed = discord.Embed(title="Pong! :ping_pong:", description=f"My latency is: **{int(ping)}ms**", color=0xB87DDF)
     await ctx.send(embed=pingEmbed)
 
 
 @bot.command()
-async def monke(ctx):
+async def monke(ctx):  # :)
     await ctx.send(
         "https://tenor.com/view/obese-monkey-fat-monkey-summer-belly-eating-lettuce-summer-look-gif-13014350"
     )
 
 
 @bot.command()
-async def repeat(ctx, *, user_in=None):
-    footerMsg = str(ctx.author.mention)
-    for s in ['/', ':', 'nigger', 'nigga', 'nig', 'nibba']:
-        user_in.replace(s, '')
-    repeatEmbed = discord.Embed(description=user_in, color=0xB87DDF)
-    repeatEmbed.add_field(name="Sent by:", value=footerMsg)
-    if user_in:
-        if user_in.lower().startswith("im"):
+async def repeat(ctx, *, userinput = None):  # Repeat command
+    sentByMention = str(ctx.author.mention)
+    for s in ['/', ':', 'nigger', 'nigga', 'nig', 'nibba']:  # A blacklist that changes the characters below with blank text
+        userinput.replace(s, '')
+    # Defining the embed to be used and it's field
+    repeatEmbed = discord.Embed(description=userinput, color=0xB87DDF)
+    repeatEmbed.add_field(name="Sent by:", value=sentByMention)
+    if userinput:  # The If statement that checks for "im" or "@everyone"/"@here"
+        if userinput.lower().startswith("im"):
             await ctx.send("yea we know")
-        elif user_in.lower().startswith('i '):
+        elif userinput.lower().startswith('i '):
             await ctx.send("yea we know")
-        elif user_in.lower().startswith("i'm"):
+        elif userinput.lower().startswith("i'm"):
             await ctx.send("yea we know")
-        elif user_in.lower() == "@everyone":
+        elif userinput.lower() == "@everyone":
             await ctx.send("no :)")
-        elif user_in.lower() == "@here":
+        elif userinput.lower() == "@here":
             await ctx.send("no :)")
-        else:
+        else:  # The else statement that sends the full message if it passes the previous el/if statements
             await ctx.send(embed=repeatEmbed)
-    else:
+    else:  # The else statement that checks if there is no user input argument
+        # The error embed that sends if there is no argument
         noUserIn = discord.Embed(title="Error",
                                     description="Sorry! It appears you didn't include something for me to repeat!",
                                     color=0xC73333
-                                 )
+                                )
         await ctx.channel.send(embed=noUserIn)
 
 
 @bot.command()
-async def ask(ctx, *, content):
+async def ask(ctx, *, content):  # 8Ball module (used to be a separate file but caused issues)
     import random
     responses = ["It is certain", "Without a doubt", "You may rely on it", "Yes, definitely", "It is decidedly so",
             "As I see it, yes", "Most likely", "Yes", "Outlook good", "Signs point to yes", "Reply hazy try again",
@@ -117,7 +119,7 @@ async def ask(ctx, *, content):
 
 
 @bot.command()
-async def servers(ctx):
+async def servers(ctx):  # Developer command
     import developers
     servers = list(bot.guilds)
     serversEmbedTitle = f"Connected on {str(len(servers))} servers"
