@@ -3,7 +3,7 @@ Hello, and welcome to the GitHub page for the Random Bot. If you're curious as t
 
 
 ### The Random Commands
-There are 5 random commands for right now:
+There are 6 random commands for right now:
 ##### Article
  - This gives you a random wikipedia article with a title, summary, and url
 ##### Number
@@ -11,9 +11,11 @@ There are 5 random commands for right now:
 ##### Video
  - This gives you a random video from YouTube
 ##### Color
- - This presents a random color w/ Hex and RGB formatting (might add CMYK for the kicks)
+ - This gives you a random color w/ Hex and RGB formatting (might add CMYK for the kicks)
 ##### Song
  - This gives you a random song from the top 50 songs of the top 50 tags of last.fm
+##### Random
+ - This gives you a random item from one of the previously listed generators
 
 ### Ping
 This is self-explanatory really. It just provides you the bot's latency.

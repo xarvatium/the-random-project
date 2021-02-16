@@ -5,6 +5,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 from generate import *
+import helpText
 
 @bot.event
 async def on_guild_join(self):
@@ -21,11 +22,11 @@ async def help(ctx):
                               color=0xB87DDF
                               )
     helpEmbed.add_field(name="General Commands",
-                        value="\;ping - checks the bot's latency\n;repeat - repeats what you say (in beta)\n;ask - gives 8Ball answers",
+                        value=helpText.general,
                         inline=False
                         )
     helpEmbed.add_field(name="Random Generator Commands",
-                        value=";generate article - gives a random wikipedia article\n;generate video - gives a random YouTube video\n;generate number [low] [high] - gives a random number in between the two given values\n;generate color - gives a random color + it's hex and RGB code\n;generate song [optional tag] - gives a random song, with an optionally specified tag (genre)",
+                        value=helpText.random,
                         inline=False
                         )
     helpEmbed.set_footer(text="Creator: Xarvatium#6561", icon_url="https://cdn.discordapp.com/avatars/514866599400833034/88a61a2683879b72622d4f9990dc6d2b.png?size=128")
