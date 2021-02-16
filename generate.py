@@ -192,8 +192,5 @@ async def random(ctx):
     thingList = ['article','video','number','color','song']
     generator = choice(thingList)
     await ctx.channel.send("You get a random " + generator + "!")
-    if generator == "number": # The "if number" can be removed when a default value is assigned to number generation
-        await number(ctx, 0, 100)
-    else:
-        await globals()[generator](ctx)
+    await globals()[generator](ctx)
 
