@@ -1,10 +1,10 @@
-import wikipedia
+#import wikipedia
 import discord
 from random import *
 from discord.ext import commands
-from googleapiclient.discovery import build # Used for parsing YouTube API requests
+#from googleapiclient.discovery import build # Used for parsing YouTube API requests
 from PIL import Image
-from keys import *
+#from keys import *
 import os
 import requests
 import json # Used for parsing the last.fm API responses
@@ -53,9 +53,9 @@ async def article(ctx):
 
 # Generates a random number between the <low> and the <high> given by the user
 @generate.command()
-async def number(ctx, low: int, high: int):
+async def number(ctx, low: int=0, high: int=100):
     # The error it gives if there is no high or low
-    numError = "There was an error! Did you make sure you included a minimum/maximum or to give numbers and not words?"
+    numError = "There was an error! Did you make sure to give numbers and not words?"
     errorEmbed = discord.Embed(title="Error:",
                                description=numError,
                                color=0xB87DDF)
@@ -185,3 +185,15 @@ async def song(ctx, *, usertag=None):
         await ctx.channel.send(embed=embed)
     except KeyError:
         await ctx.channel.send("Tag error! You may have specified an invalid tag for searching.")
+
+# Grabs a random randomizer
+@generate.command()
+async def random(ctx):
+    thingList = ['article','video','number','color','song']
+    generator = choice(thingList)
+    await ctx.channel.send("You get a random " + generator + "!")
+    if generator == "number": # The "if number" can be removed when a default value is assigned to number generation
+        await number(ctx, 0, 100)
+    else:
+        await globals()[generator](ctx)
+
