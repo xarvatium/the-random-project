@@ -1,6 +1,16 @@
 # The Random Bot
 Hello, and welcome to the GitHub page for the Random Bot. If you're curious as to what all it does, I will include sections that describe the different aspects of the bot.
 
+### General Purpose Commands
+These are the general purpose commands:
+##### Help
+This provides a list of commands (and how to use them properly)
+##### Ping
+ - This is self-explanatory really. It just provides you the bot's latency.
+##### Ask
+ - This is basically an 8Ball that gives you 8ball answers.
+##### Repeat
+ - This repeats whatever you tell it to say (some things have been blacklisted).
 
 ### The Random Commands
 There are 6 random commands for right now:
@@ -17,8 +27,6 @@ There are 6 random commands for right now:
 ##### Random
  - This gives you a random item from one of the previously listed generators
 
-### Ping
-This is self-explanatory really. It just provides you the bot's latency.
 
 ### Roadmap:
 - [x] Incorporate a homebrew Random Wikipedia Article generator

@@ -35,7 +35,7 @@ async def help(ctx):
     await message.add_reaction("❌")
 
     def check(reaction, user):
-        return user == ctx.author and str(reaction.emoji) in ["◀️", "▶️", "❌"]
+        return user == ctx.author and str(reaction.emoji) in ["❌"]
         # This makes sure nobody except the command sender can interact with the "menu".
 
     while True:
@@ -80,6 +80,8 @@ async def monke(ctx):
 @bot.command()
 async def repeat(ctx, *, user_in=None):
     footerMsg = str(ctx.author.mention)
+    for s in ['/', ':', 'nigger', 'nigga', 'nig', 'nibba']:
+        user_in.replace(s, '')
     repeatEmbed = discord.Embed(description=user_in, color=0xB87DDF)
     repeatEmbed.add_field(name="Sent by:", value=footerMsg)
     if user_in:
