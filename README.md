@@ -3,7 +3,7 @@ Hello, and welcome to the GitHub page for the Random Bot. If you're curious as t
 
 
 ### The Random Commands
-There are 5 random commands for right now:
+There are 6 random commands for right now:
 ##### Article
  - This gives you a random wikipedia article with a title, summary, and url
 ##### Number
