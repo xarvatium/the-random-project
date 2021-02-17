@@ -1,4 +1,55 @@
-p {
-  color: #B87DDF;
+body {
+  background-color: #292929;
+}
+
+.container {
+  align-items: center;
+}
+
+.border {
+  margin-top: 10%;
+  border-radius: 25px;
+  background: #474747;
+  margin-left: 25%;
+  margin-right: 25%;
+  width: 50%;
+  height: 60%; 
+}
+
+.mainHeader {
+  padding-top: 12px;
+  font-size: 40px;
+  font-family: "Varela Round", sans-serif;
+  color: #BA70EB;
   text-align: center;
+}
+
+.mainBody {
+  text-align: center;
+  font-size: 21px;
+  font-family: "Varela Round", sans-serif;
+  color: #ca89f5;
+  padding: 22px;
+  padding-left: 34px;
+  padding-right: 34px;
+}
+
+button {
+  overflow: hidden;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-size: 60px;
+  background: none;
+  position: absolute;
+}
+
+.discord {
+  bottom: 23%;
+  left: 30%;
+}
+
+.github {
+  bottom: 23%;
+  left: 25.5%;
 }
