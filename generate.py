@@ -21,7 +21,7 @@ async def on_ready():
     print('Logged in as {0.user}'.format(bot))
     await bot.change_presence(
         activity=discord.Game(
-            name=";help || with a dice"
+            name=";help || with dice"
         )
     )
 
