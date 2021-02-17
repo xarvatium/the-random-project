@@ -39,6 +39,7 @@ There are 6 random commands for right now:
 - [x] Added a random song generator
 - [ ] Maybe add a random Urban Dictionary definition for channels marked nsfw(?)
 - [ ] Add a r/all puller for only channels marked nsfw (with a possibility for ignoring nsfw posts in sfw channels)
+- [ ] Add automated testing to make error catching easier in beta
 
 ### Sources:
 [Discord.py documentation](https://discordpy.readthedocs.io/en/latest/) <br/>
