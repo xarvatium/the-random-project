@@ -1,0 +1,12 @@
+.env
+ideas.txt
+.idea
+.vscode
+ssh.ps1
+BotFiles/developers.py
+BotFiles/keys.py
+*.sh
+token.txt
+__pycache__
+BotFiles/__pycache__
+BotFiles/config.json
