@@ -196,19 +196,42 @@ async def random(ctx):
     await ctx.channel.send("You get a random " + generator + "!")
     await globals()[generator](ctx)
 
-
+""" # TODO: define r outside of the now-missing keys file
 @generate.command()
 async def reddit(ctx):
-    LIMIT_POST = 5
-    subreddit = reddit.subreddit('all')
-    new_submissions = subreddit.new(limit = LIMIT_POST)
-    current_time = int(time.time())
-    posts = []
-    for submission in new_submissions:
-        sub_age = ((current_time - submission.created_utc) /60 /60 /24)
-        if sub_age < 1:
-            posts.append(submission)
+    subreddit = r.subreddit("all")
+    submissions = [post for post in subreddit.hot(limit=100)]
 
-    randomNum = random.randint(0, LIMIT_POST -1)
-    rand_post = posts[randomNum]
-    print(rand_post)
+    random_post_number = randint(0, 99)
+    random_post = submissions[random_post_number]
+    subTitle = random_post.title
+    subAuth = random_post.author
+    subDesc = random_post.selftext
+    subLink = "https://www.reddit.com" + random_post.permalink
+    subScore = random_post.score
+    subUrl = random_post.url
+    nsfw = random_post.over_18
+
+    embedAuth = "/u/" + str(subAuth)
+    embedScore = "Submission Score: " + str(subScore)
+
+    redditEmbed = discord.Embed(title=subTitle, color=0xB87DDF)
+    redditEmbed.set_author(name=embedAuth)
+    redditEmbed.add_field(name="Post Link:", value=subLink)
+    redditEmbed.set_image(url=subUrl)
+    redditEmbed.set_footer(text=embedScore)
+
+    if subDesc != "":
+        redditEmbed.add_field(name="Description:", value=subDesc, inline=False)
+
+    if nsfw:
+        if ctx.channel.is_nsfw():
+            await ctx.channel.send(embed=redditEmbed)
+        elif not ctx.channel.is_nsfw():
+            notNsfwEmbed = discord.Embed(title="Error:",
+                                         description="Channel is not nsfw and the command pulled an nsfw post.",
+                                         color=0xC73333)
+            await ctx.channel.send(notNsfwEmbed)
+    else:
+        await ctx.channel.send(embed=redditEmbed)"""
+
