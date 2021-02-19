@@ -139,36 +139,35 @@ async def status(ctx, *, content):  # Developer command that changes the bot's s
         await ctx.channel.send(embed=notDevEmbed)
 
 
-# The Token initialization and Checking if keys.py exists
+# The Token initialization and Checking if config.json exists
 if __name__ == '__main__':
-    if not os.path.exists('keys.py'):
-        keysGen = str(input("ERROR: DID NOT FIND A KEYS.PY FILE\nWould you like to make a keys.py file? (Y/N) ")).lower()
+    if not os.path.exists('config.json'):
+        keysGen = str(input("ERROR: DID NOT FIND A CONFIG.JSON FILE\nWould you like to make a config.json file? (Y/N) ")).lower()
         if keysGen == 'y':
-            config_template = '''token = "//TOKEN//"
-lastfm_api = "//LAST.FM API//"
-lastfm_ua = "//LAST.FM UA//"
-youtubeKey = "//GOOGLE DEV KEY//"
-            '''
+            config = {} # Create the empty dictionary for configuration
             print("----Note: We do not receive your API keys, these are stored in a file on your computer.----")
-            ytApiKey = str(input("Please input your YouTube API Developer Key: "))
-            lastFmKey = str(input("Please input your last.fm API key: "))
-            lastFmUA = str(input("Please input your last.fm User Agent: "))
-            discordToken = str(input("Please input your Discord bot token: "))
-
-            config_template = config_template.replace("//TOKEN//", discordToken)
-            config_template = config_template.replace("//LAST.FM API//", lastFmKey)
-            config_template = config_template.replace("//LAST.FM UA//", lastFmUA)
-            config_template = config_template.replace("//GOOGLE DEV KEY//", ytApiKey)
-
-            with open('keys.py', 'w+') as keysFile:
-                keysFile.write(config_template)
+            print("The config.json file created by this should be considered sensitive. DO NOT share it with anyone.")
+            config['ytApiKey'] = str(input("Please input your YouTube API Developer Key: "))
+            config['lastFmKey'] = str(input("Please input your last.fm API key: "))
+            config['lastFmUA'] = str(input("Please input the User Agent that should be used when requesting from the last.fm API: "))
+            config['discordToken'] = str(input("Please input your Discord bot token: "))
+            config['bannedWords'] = str(input("Please input a list of words you don't want the bot to repeat, seperated by a comma.")).split(',')
+            config['developers'] = {} # Create the empty developers dictionary
+            print("The next section will allow you to choose who to give access to developer commands. Developers will be able to change the bot's status, see bot statistics, and add other developers. Make sure you trust anyone you add.")
+            print("Who will your first developer be? You'll be able to add other ones through the bot later.")
+            config['developers'][str(input("User ID of the first dev: "))] = str(input("Name of the first dev: "))
+            print("Setup complete, running the bot...")
+            with open('config.json', 'w+') as configFile:
+                json.dump(config, configFile, indent=4)
+            generate_config_reload()
         elif keysGen == 'n':
-            print("Exiting... Please remember to make a keys.py file in order for the bot to be fully functional.")
+            print("Exiting... Please remember to make a config.json file in order for the bot to be fully functional.")
             quit()
         print("Creating... Done! Your self-hosted bot is now live!")
-        from keys import *
-        bot.run(token)
-    elif os.path.exists('keys.py'):
-        from keys import *
-        bot.run(token)
+        bot.run(config['discordToken'])
+    elif os.path.exists('config.json'):
+        with open('config.json') as configFile:
+            config = json.load(configFile)
+        generate_config_reload()
+        bot.run(config['discordToken'])
 
