@@ -3,12 +3,22 @@ import developers
 global dev_list
 from generate import *
 import helpText
+import pymongo
+from pymongo import MongoClient
+mongoclient = MongoClient('mongodb://localhost:27017')
 
 @bot.event
-async def on_guild_join(self):  # Logs when the bot joins a guild (does not log ID, so don't worry)
+async def on_guild_join(guild):  # Logs when the bot joins a guild (does not log ID, so don't worry)
     servers = list(bot.guilds)
+    mndb = mongoclient['the-random-bot']
+    servercol = mndb['servers']
+    serverID = guild.id
+    serverName = guild.name
+    serverDict = { 'serverID': serverID, "serverName": serverName }
+    dbWrite = servercol.insert_one(serverDict)
     channel = bot.get_channel(811010228945682432)
-    joinServerEmbed = discord.Embed(title="Added to a new server!", description=f"New Server Total: **{str(len(servers))}**")
+    joinDesc = "Server ID: " + str(serverID) + "\nServer Name: " + str(serverName) + "\nDatabase Result: " + str(dbWrite)
+    joinServerEmbed = discord.Embed(title="Added to a new server!", description=joinDesc)
     await channel.send(embed=joinServerEmbed)
 
 
@@ -137,6 +147,57 @@ async def status(ctx, *, content):  # Developer command that changes the bot's s
         )
     else:
         await ctx.channel.send(embed=notDevEmbed)
+
+
+@bot.group()
+async def database(ctx):
+    if ctx.invoked_subcommand is None:
+        nullEmbed = discord.Embed(title="Error",
+                                  description="Please use 'show' or 'add' to interact with the database",
+                                  color=0xC73333
+                                  )
+        await ctx.channel.send(embed=nullEmbed)
+
+
+@database.command()
+async def show(ctx):
+    dev_list = developers.dev_list["Developers"]["User IDs"]
+    notDevEmbed = discord.Embed(title="Error",
+                              description="Sorry! It appears you don't have permission to use this command.",
+                              color=0xC73333)
+    if ctx.message.author.id in dev_list:
+        servers = list(bot.guilds)
+        mndb = mongoclient['the-random-bot']
+        servercol = mndb['servers']
+        dbquery = servercol.find()
+        empty = ""
+        entry = 1
+        for data in dbquery:
+            empty += "```md\n# Entry " + str(entry) + ":\n" + str(data) + "```\n"
+            entry += 1
+        await ctx.channel.send(empty)
+    else:
+        await ctx.channel.send(embed=notDevEmbed)
+
+
+@database.command()
+async def add(ctx, serverID, serverName):
+    mndb = mongoclient['the-random-bot']
+    mndb.servers.insert_one(
+        { "serverID" : serverID,
+            "serverName": serverName
+        }
+    )
+    await ctx.channel.send("Added to the database.")
+
+
+@database.command()
+async def remove(ctx, serverID):
+    mndb = mongoclient['the-random-bot']
+    servercol = mndb["servers"]
+    deleteQuery = { "serverID": serverID }
+    servercol.delete_one(deleteQuery)
+    await ctx.channel.send("Removed from the database.")
 
 
 # The Token initialization and Checking if config.json exists
