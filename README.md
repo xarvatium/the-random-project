@@ -10,7 +10,7 @@ This provides a list of commands (and how to use them properly)
 ##### Ask
  - This is basically an 8Ball that gives you 8ball answers.
 ##### Repeat
- - This repeats whatever you tell it to say with a configurable list of banned words. We recommend adding "/" to the banned words list to prevent the bot from sending links.
+ - This repeats whatever you tell it to say (some things have been blacklisted).
 
 ### The Random Commands
 There are 6 random commands for right now:
@@ -42,25 +42,27 @@ There are 6 random commands for right now:
 - [ ] Add automated testing to make error catching easier in beta
 
 ### Are you Self-Hosting?
-We are completely fine with self-hosting, we just ask you please follow the License and it's terms. <br>
+We are completely fine with self-hosting, we just ask that if you do publish to github, to please follow the License and it's terms. <br>
 Below are the developer only commands: 
  - ;servers - this lists the servers the bot is in
- - ;status [status]- this changes the status of the bot 
- - ;lsdev - this lists all people who have access to developer commands
- - ;mkdev [User ID or @] [Name of Dev] - this gives a new person access to developer commands
- - ;rmdev [User ID or @] - this removes developer command access from someone
- <br>
+ - ;status [status]- this changes the status of the bot <br>
 
- To self host, you'll have to grab a few API keys:
-[Google's API](https://console.developers.google.com/getting-started) <br>
-[last.fm's API](https://www.last.fm/api/) <br>
-[Discord bot token](https://discord.com/developers/)
-
-You'll be prompted to input these during the first-run setup process
+Note: You will have to make a file called "developers.py" with the following layout:
+```py
+dev_list = {
+    "Developers": 
+    {
+        "User IDs": [1234567890],
+        "Name/Discrim": ["Username#1234"]
+    }
+}
+```
 
 ### Sources:
 [Discord.py Documentation](https://discordpy.readthedocs.io/en/latest/) <br>
 [Wikipedia's Python API](https://stackabuse.com/getting-started-with-pythons-wikipedia-api/) <br>
+[Google's API](https://console.developers.google.com/getting-started) <br>
+[last.fm's API](https://www.last.fm/api)
 
 #### Are you curious as to how I made this?
 It's simple! All I used was discord.py with a random wiki article generator I made previously and built on it from there!

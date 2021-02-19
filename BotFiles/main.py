@@ -1,15 +1,8 @@
 import asyncio
+import developers
+global dev_list
 from generate import *
-import os
-import json
-global config # The config file will be used for many different things, so it should be global
-
-# Having helpText assigned here will cause helptext to only get read once, reducing disk access
-helpText = {}
-with open('helpText') as helpFile:
-    helpString = helpFile.read()
-helpText['general'] = helpString.split("<general>\n")[1].split("\n</general>")[0]
-helpText['random'] = helpString.split("<random>\n")[1].split("\n</random>")[0]
+import helpText
 
 @bot.event
 async def on_guild_join(self):  # Logs when the bot joins a guild (does not log ID, so don't worry)
@@ -27,11 +20,11 @@ async def help(ctx):  # The help command
                               color=0xB87DDF
                               )
     helpEmbed.add_field(name="General Commands",
-                        value=helpText['general'],
+                        value=helpText.general,
                         inline=False
                         )
     helpEmbed.add_field(name="Random Generator Commands",
-                        value=helpText['random'],
+                        value=helpText.random,
                         inline=False
                         )
     helpEmbed.set_footer(text="Creator: Xarvatium#6561", icon_url="https://cdn.discordapp.com/avatars/514866599400833034/88a61a2683879b72622d4f9990dc6d2b.png?size=128")
@@ -72,9 +65,8 @@ async def monke(ctx):  # :)
 @bot.command()
 async def repeat(ctx, *, userinput = None):  # Repeat command
     sentByMention = str(ctx.author.mention)
-    for s in config['bannedWords']:
-        # Reads from the bannedWords list and removes anything on the list from the text
-        userinput = userinput.replace(s, '')
+    for s in ['/', ':', 'nigger', 'nigga', 'nig', 'nibba']:  # A blacklist that changes the characters below with blank text
+        userinput.replace(s, '')
     # Defining the embed to be used and it's field
     repeatEmbed = discord.Embed(description=userinput, color=0xB87DDF)
     repeatEmbed.add_field(name="Sent by:", value=sentByMention)
@@ -114,14 +106,17 @@ async def ask(ctx, *, content):  # 8Ball module (used to be a separate file but 
 # ------Developer Commands------
 @bot.command()
 async def servers(ctx):  # Developer command
+    import developers
     servers = list(bot.guilds)
     serversEmbedTitle = f"Connected on {str(len(servers))} servers"
     serversEmbedDesc = "- " + '\n- '.join(guild.name for guild in servers)
+    dev_list = developers.dev_list["Developers"]["User IDs"]
     serversEmbed = discord.Embed(title=serversEmbedTitle, description=serversEmbedDesc, color=0xB87DDF)
+
     notDevEmbed = discord.Embed(title="Error",
                                 description="Sorry! It appears you don't have permission to use this command.",
                                 color=0xC73333)
-    if str(ctx.message.author.id) in config['developers']:
+    if ctx.message.author.id in dev_list:
         await ctx.send(embed=serversEmbed)
 
     else:
@@ -130,10 +125,11 @@ async def servers(ctx):  # Developer command
 
 @bot.command()
 async def status(ctx, *, content):  # Developer command that changes the bot's status
+    dev_list = developers.dev_list["Developers"]["User IDs"]
     notDevEmbed = discord.Embed(title="Error",
                               description="Sorry! It appears you don't have permission to use this command.",
                               color=0xC73333)
-    if str(ctx.message.author.id) in config['developers']:
+    if ctx.message.author.id in dev_list:
         await bot.change_presence(
             activity=discord.Game(
                 name=content
@@ -142,92 +138,37 @@ async def status(ctx, *, content):  # Developer command that changes the bot's s
     else:
         await ctx.channel.send(embed=notDevEmbed)
 
-@bot.command()
-async def mkdev(ctx, userid=None, *, devName=None):
-    for i in ["<",">","@","!"]: # Makes @Person work too
-        userid = userid.replace(i,'')
-    notDevEmbed = discord.Embed(title="Error",
-                              description="Sorry! It appears you don't have permission to use this command.",
-                              color=0xC73333)
-    if str(ctx.message.author.id) in config['developers']:
-        if not userid or not devName:
-            await ctx.channel.send("Usage: ;mkdev <userid> <name>")
-            return
-        if userid not in config['developers']:
-            config['developers'][userid] = devName
-            await ctx.channel.send("Successfully added <@" + userid + "> as a developer")
-            with open('config.json', 'w+') as configFile:
-                json.dump(config, configFile, indent=4)
-                generate_config_reload()
-        else:
-            await ctx.channel.send("Error: " + userid + " is already a developer")
-    else:
-        await ctx.channel.send(embed=notDevEmbed)
-
-@bot.command()
-async def rmdev(ctx, userid=None):
-    for i in ["<",">","@","!"]: # Makes @Person work too
-        userid = userid.replace(i,'')
-    notDevEmbed = discord.Embed(title="Error",
-                              description="Sorry! It appears you don't have permission to use this command.",
-                              color=0xC73333)
-    if str(ctx.message.author.id) in config['developers']:
-        if not userid:
-            await ctx.channel.send("Usage: ;rmdev <userid>")
-            return
-        if userid in config['developers']:
-            config['developers'].pop(userid)
-            await ctx.channel.send("Successfully removed <@" + userid + "> as a developer")
-            with open('config.json', 'w+') as configFile:
-                json.dump(config, configFile, indent=4)
-                generate_config_reload()
-        else:
-            await ctx.channel.send("Error: " + userid + " is not a developer")
-    else:
-        await ctx.channel.send(embed=notDevEmbed)
-
-@bot.command()
-async def lsdev(ctx):
-    notDevEmbed = discord.Embed(title="Error",
-                              description="Sorry! It appears you don't have permission to use this command.",
-                              color=0xC73333)
-    if str(ctx.message.author.id) in config['developers']:
-        devsEmbed = discord.Embed(title="List of current developers: ")
-        for i in config['developers']:
-            devsEmbed.add_field(value=i, name=config['developers'][i], inline=False)
-        await ctx.channel.send(embed=devsEmbed)
-    else:
-        await ctx.channel.send(embed=notDevEmbed)
 
 # The Token initialization and Checking if keys.py exists
 if __name__ == '__main__':
-    if not os.path.exists('config.json'):
-        keysGen = str(input("ERROR: DID NOT FIND A CONFIG.JSON FILE\nWould you like to make a config.json file? (Y/N) ")).lower()
+    if not os.path.exists('keys.py'):
+        keysGen = str(input("ERROR: DID NOT FIND A KEYS.PY FILE\nWould you like to make a keys.py file? (Y/N) ")).lower()
         if keysGen == 'y':
-            config = {} # Create the empty dictionary for configuration
+            config_template = '''token = "//TOKEN//"
+lastfm_api = "//LAST.FM API//"
+lastfm_ua = "//LAST.FM UA//"
+youtubeKey = "//GOOGLE DEV KEY//"
+            '''
             print("----Note: We do not receive your API keys, these are stored in a file on your computer.----")
-            print("The config.json file created by this should be considered sensitive. DO NOT share it with anyone.")
-            config['ytApiKey'] = str(input("Please input your YouTube API Developer Key: "))
-            config['lastFmKey'] = str(input("Please input your last.fm API key: "))
-            config['lastFmUA'] = str(input("Please input the User Agent that should be used when requesting from the last.fm API: "))
-            config['discordToken'] = str(input("Please input your Discord bot token: "))
-            config['bannedWords'] = str(input("Please input a list of words you don't want the bot to repeat, seperated by a comma.")).split(',')
-            config['developers'] = {} # Create the empty developers dictionary
-            print("The next section will allow you to choose who to give access to developer commands. Developers will be able to change the bot's status, see bot statistics, and add other developers. Make sure you trust anyone you add.")
-            print("Who will your first developer be? You'll be able to add other ones through the bot later.")
-            config['developers'][str(input("User ID of the first dev: "))] = str(input("Name of the first dev: "))
-            print("Setup complete, running the bot...")
-            with open('config.json', 'w+') as configFile:
-                json.dump(config, configFile, indent=4)
-            generate_config_reload()
+            ytApiKey = str(input("Please input your YouTube API Developer Key: "))
+            lastFmKey = str(input("Please input your last.fm API key: "))
+            lastFmUA = str(input("Please input your last.fm User Agent: "))
+            discordToken = str(input("Please input your Discord bot token: "))
+
+            config_template = config_template.replace("//TOKEN//", discordToken)
+            config_template = config_template.replace("//LAST.FM API//", lastFmKey)
+            config_template = config_template.replace("//LAST.FM UA//", lastFmUA)
+            config_template = config_template.replace("//GOOGLE DEV KEY//", ytApiKey)
+
+            with open('keys.py', 'w+') as keysFile:
+                keysFile.write(config_template)
         elif keysGen == 'n':
-            print("Exiting... Please remember to make a config.json file in order for the bot to be fully functional.")
+            print("Exiting... Please remember to make a keys.py file in order for the bot to be fully functional.")
             quit()
         print("Creating... Done! Your self-hosted bot is now live!")
-        bot.run(config['discordToken'])
-    elif os.path.exists('config.json'):
-        with open('config.json') as configFile:
-            config = json.load(configFile)
-        generate_config_reload()
-        bot.run(config['discordToken'])
+        from keys import *
+        bot.run(token)
+    elif os.path.exists('keys.py'):
+        from keys import *
+        bot.run(token)
 

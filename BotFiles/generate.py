@@ -1,4 +1,4 @@
-#import wikipedia
+import wikipedia
 import discord
 from random import *
 from discord.ext import commands
@@ -6,14 +6,9 @@ from googleapiclient.discovery import build # Used for parsing YouTube API reque
 from PIL import Image
 import os
 import requests
-#import praw # For the r/all generator
+import praw # For the r/all generator
 import json # Used for parsing the last.fm API responses
 from time import time # Used for getting the current time to avoid rate limiting
-
-def generate_config_reload():
-    global config 
-    with open('config.json') as configFile:
-        config = json.load(configFile)
 
 bot = commands.Bot(command_prefix=';', help_command=None)
 
@@ -74,7 +69,7 @@ async def number(ctx, low: int=0, high: int=100):
 @generate.command()  # Random YouTube Video Generator - Gives a random YouTube video
 async def video(ctx):
     import random
-    global config
+    global youtubeKey
     # Defines the variables to be used
     youtubeApiServiceName = 'youtube'
     youtubeApiVersion = "v3"
@@ -85,7 +80,7 @@ async def video(ctx):
     def youtube_search():
 
         # Giving my API Key and Developer Key to Google's API
-        youtube = build(youtubeApiServiceName, youtubeApiVersion, developerKey=config['ytApiKey'])
+        youtube = build(youtubeApiServiceName, youtubeApiVersion, developerKey=youtubeKey)
 
         # This is the actual code that searches YouTube and gives 5 results back, and chooses one
         searchResponse = youtube.search().list(
@@ -150,7 +145,7 @@ async def song(ctx, *, usertag=None):
         for s in ['&','%','+','?','=','/']:
             usertag = usertag.replace(s,'')   
     headers = {
-        "user-agent": config['lastFmUA']
+        "user-agent": lastfm_ua
     }
     # Check if the last data update was over 3 hours ago
     if (time() - lastfm_update) > 10800:
@@ -159,7 +154,7 @@ async def song(ctx, *, usertag=None):
             'taglist' : [],
             'tags' : {}
         } # Empty lastfm tracklist with required data structure
-        tagrq = requests.get(base_url + "?method=tag.getTopTags&format=json&api_key=" + config['lastFmKey'])
+        tagrq = requests.get(base_url + "?method=tag.getTopTags&format=json&api_key=" + lastfm_api)
         tags = json.loads(tagrq.content.decode('UTF-8'))['toptags']['tag'] # Get the json response of tags into a list
         for tag in tags:
             lastfm_tracklist['tags'][tag['name']] = [] # Create an empty list for each tag
@@ -168,14 +163,14 @@ async def song(ctx, *, usertag=None):
     if not usertag: # If no tag is specified, get a random one instead
         usertag = choice(lastfm_tracklist['taglist'])
     elif usertag not in lastfm_tracklist['taglist']: # If a usertag is defined but is not yet in the taglist, create a new list for the usertag and add it to the taglist
-        trackrq = requests.get(base_url + "?method=tag.getTopTracks&format=json&tag=" + usertag.replace(' ','%20') +"&api_key=" + config['lastFmKey']) # Doing the webrequest here will let use check if it's a valid tag
+        trackrq = requests.get(base_url + "?method=tag.getTopTracks&format=json&tag=" + usertag.replace(' ','%20') +"&api_key=" + lastfm_api) # Doing the webrequest here will let use check if it's a valid tag
         tracks = json.loads(trackrq.content.decode('UTF-8'))
         if tracks['tracks']['track'] != []: # If the tracklist isn't empty (indicating a bad tag)
             lastfm_tracklist['taglist'].append(usertag)
             lastfm_tracklist['tags'][usertag] = tracks['tracks']['track']
     try:
         if lastfm_tracklist['tags'][usertag] == []: # If it's an empty list
-            trackrq = requests.get(base_url + "?method=tag.getTopTracks&format=json&tag=" + usertag.replace(' ','%20') +"&api_key=" + config['lastFmKey']) # Doing the webrequest here will let use check if it's a valid tag (again, but just to make sure there wasn't an issue)
+            trackrq = requests.get(base_url + "?method=tag.getTopTracks&format=json&tag=" + usertag.replace(' ','%20') +"&api_key=" + lastfm_api) # Doing the webrequest here will let use check if it's a valid tag (again, but just to make sure there wasn't an issue)
             tracks = json.loads(trackrq.content.decode('UTF-8'))
             if tracks['tracks']['track'] != []: # If the tracklist isn't empty (indicating a bad tag)
                 lastfm_tracklist['tags'][usertag] = tracks['tracks']['track']
@@ -199,16 +194,38 @@ async def random(ctx):
 
 @generate.command()
 async def reddit(ctx):
-    LIMIT_POST = 5
-    subreddit = reddit.subreddit('all')
-    new_submissions = subreddit.new(limit = LIMIT_POST)
-    current_time = int(time.time())
-    posts = []
-    for submission in new_submissions:
-        sub_age = ((current_time - submission.created_utc) /60 /60 /24)
-        if sub_age < 1:
-            posts.append(submission)
+    subreddit = r.subreddit("all")
+    submissions = [post for post in subreddit.hot(limit=100)]
 
-    randomNum = random.randint(0, LIMIT_POST -1)
-    rand_post = posts[randomNum]
-    print(rand_post)
+    random_post_number = randint(0, 99)
+    random_post = submissions[random_post_number]
+    subTitle = random_post.title
+    subAuth = random_post.author
+    subDesc = random_post.selftext
+    subLink = "https://www.reddit.com" + random_post.permalink
+    subScore = random_post.score
+    subUrl = random_post.url
+    nsfw = random_post.over_18
+
+    embedAuth = "/u/" + str(subAuth)
+    embedScore = "Submission Score: " + str(subScore)
+
+    redditEmbed = discord.Embed(title=subTitle, color=0xB87DDF)
+    redditEmbed.set_author(name=embedAuth)
+    redditEmbed.add_field(name="Post Link:", value=subLink)
+    redditEmbed.set_image(url=subUrl)
+    redditEmbed.set_footer(text=embedScore)
+
+    if subDesc != "":
+        redditEmbed.add_field(name="Description:", value=subDesc, inline=False)
+
+    if nsfw:
+        if ctx.channel.is_nsfw():
+            await ctx.channel.send(embed=redditEmbed)
+        elif not ctx.channel.is_nsfw():
+            notNsfwEmbed = discord.Embed(title="Error:",
+                                         description="Channel is not nsfw and the command pulled an nsfw post.",
+                                         color=0xC73333)
+            await ctx.channel.send(notNsfwEmbed)
+    else:
+        await ctx.channel.send(embed=redditEmbed)
