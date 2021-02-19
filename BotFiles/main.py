@@ -1,5 +1,4 @@
 import asyncio
-import developers
 global dev_list
 from generate import *
 import helpText
@@ -157,7 +156,6 @@ async def database(ctx):
 
 @database.command()
 async def show(ctx):
-    dev_list = developers.dev_list["Developers"]["User IDs"]
     notDevEmbed = discord.Embed(title="Error",
                               description="Sorry! It appears you don't have permission to use this command.",
                               color=0xC73333)
