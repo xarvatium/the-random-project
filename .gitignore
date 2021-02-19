@@ -1,10 +1,5 @@
-.env
-ideas.txt
 .idea
 .vscode
-ssh.ps1
 BotFiles/developers.py
-BotFiles/keys.py
-*.sh
-token.txt
+BotFiles/config.json
 __pycache__
