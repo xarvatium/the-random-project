@@ -1,4 +1,4 @@
-import wikipedia
+#import wikipedia
 import discord
 from random import *
 from discord.ext import commands
@@ -6,9 +6,14 @@ from googleapiclient.discovery import build # Used for parsing YouTube API reque
 from PIL import Image
 import os
 import requests
-import praw # For the r/all generator
+#import praw # For the r/all generator
 import json # Used for parsing the last.fm API responses
 from time import time # Used for getting the current time to avoid rate limiting
+
+def generate_config_reload():
+    global config 
+    with open('config.json') as configFile:
+        config = json.load(configFile)
 
 bot = commands.Bot(command_prefix=';', help_command=None)
 
@@ -69,7 +74,7 @@ async def number(ctx, low: int=0, high: int=100):
 @generate.command()  # Random YouTube Video Generator - Gives a random YouTube video
 async def video(ctx):
     import random
-    global youtubeKey
+    global config
     # Defines the variables to be used
     youtubeApiServiceName = 'youtube'
     youtubeApiVersion = "v3"
@@ -80,7 +85,7 @@ async def video(ctx):
     def youtube_search():
 
         # Giving my API Key and Developer Key to Google's API
-        youtube = build(youtubeApiServiceName, youtubeApiVersion, developerKey=youtubeKey)
+        youtube = build(youtubeApiServiceName, youtubeApiVersion, developerKey=config['ytApiKey'])
 
         # This is the actual code that searches YouTube and gives 5 results back, and chooses one
         searchResponse = youtube.search().list(
@@ -145,7 +150,7 @@ async def song(ctx, *, usertag=None):
         for s in ['&','%','+','?','=','/']:
             usertag = usertag.replace(s,'')   
     headers = {
-        "user-agent": lastfm_ua
+        "user-agent": config['lastFmUA']
     }
     # Check if the last data update was over 3 hours ago
     if (time() - lastfm_update) > 10800:
@@ -154,7 +159,7 @@ async def song(ctx, *, usertag=None):
             'taglist' : [],
             'tags' : {}
         } # Empty lastfm tracklist with required data structure
-        tagrq = requests.get(base_url + "?method=tag.getTopTags&format=json&api_key=" + lastfm_api)
+        tagrq = requests.get(base_url + "?method=tag.getTopTags&format=json&api_key=" + config['lastFmKey'])
         tags = json.loads(tagrq.content.decode('UTF-8'))['toptags']['tag'] # Get the json response of tags into a list
         for tag in tags:
             lastfm_tracklist['tags'][tag['name']] = [] # Create an empty list for each tag
@@ -163,14 +168,14 @@ async def song(ctx, *, usertag=None):
     if not usertag: # If no tag is specified, get a random one instead
         usertag = choice(lastfm_tracklist['taglist'])
     elif usertag not in lastfm_tracklist['taglist']: # If a usertag is defined but is not yet in the taglist, create a new list for the usertag and add it to the taglist
-        trackrq = requests.get(base_url + "?method=tag.getTopTracks&format=json&tag=" + usertag.replace(' ','%20') +"&api_key=" + lastfm_api) # Doing the webrequest here will let use check if it's a valid tag
+        trackrq = requests.get(base_url + "?method=tag.getTopTracks&format=json&tag=" + usertag.replace(' ','%20') +"&api_key=" + config['lastFmKey']) # Doing the webrequest here will let use check if it's a valid tag
         tracks = json.loads(trackrq.content.decode('UTF-8'))
         if tracks['tracks']['track'] != []: # If the tracklist isn't empty (indicating a bad tag)
             lastfm_tracklist['taglist'].append(usertag)
             lastfm_tracklist['tags'][usertag] = tracks['tracks']['track']
     try:
         if lastfm_tracklist['tags'][usertag] == []: # If it's an empty list
-            trackrq = requests.get(base_url + "?method=tag.getTopTracks&format=json&tag=" + usertag.replace(' ','%20') +"&api_key=" + lastfm_api) # Doing the webrequest here will let use check if it's a valid tag (again, but just to make sure there wasn't an issue)
+            trackrq = requests.get(base_url + "?method=tag.getTopTracks&format=json&tag=" + usertag.replace(' ','%20') +"&api_key=" + config['lastFmKey']) # Doing the webrequest here will let use check if it's a valid tag (again, but just to make sure there wasn't an issue)
             tracks = json.loads(trackrq.content.decode('UTF-8'))
             if tracks['tracks']['track'] != []: # If the tracklist isn't empty (indicating a bad tag)
                 lastfm_tracklist['tags'][usertag] = tracks['tracks']['track']
@@ -191,7 +196,7 @@ async def random(ctx):
     await ctx.channel.send("You get a random " + generator + "!")
     await globals()[generator](ctx)
 
-
+""" # TODO: define r outside of the now-missing keys file
 @generate.command()
 async def reddit(ctx):
     subreddit = r.subreddit("all")
@@ -228,4 +233,5 @@ async def reddit(ctx):
                                          color=0xC73333)
             await ctx.channel.send(notNsfwEmbed)
     else:
-        await ctx.channel.send(embed=redditEmbed)
+        await ctx.channel.send(embed=redditEmbed)"""
+
