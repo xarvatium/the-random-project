@@ -161,7 +161,7 @@ async def show(ctx):
     notDevEmbed = discord.Embed(title="Error",
                               description="Sorry! It appears you don't have permission to use this command.",
                               color=0xC73333)
-    if ctx.message.author.id in dev_list:
+    if str(ctx.message.author.id) in config['developers']:
         servers = list(bot.guilds)
         mndb = mongoclient['the-random-bot']
         servercol = mndb['servers']
@@ -179,12 +179,18 @@ async def show(ctx):
 @database.command()
 async def add(ctx, serverID, serverName):
     mndb = mongoclient['the-random-bot']
-    mndb.servers.insert_one(
-        { "serverID" : serverID,
-            "serverName": serverName
-        }
-    )
-    await ctx.channel.send("Added to the database.")
+    notDevEmbed = discord.Embed(title="Error",
+                                description="Sorry! It appears you don't have permission to use this command.",
+                                color=0xC73333)
+    if str(ctx.message.author.id) in config['developers']:
+        mndb.servers.insert_one(
+            { "serverID" : serverID,
+                "serverName": serverName
+            }
+        )
+        await ctx.channel.send("Added to the database.")
+    else:
+        await ctx.channel.send(embed=notDevEmbed)
 
 
 @database.command()
@@ -192,8 +198,14 @@ async def remove(ctx, serverID):
     mndb = mongoclient['the-random-bot']
     servercol = mndb["servers"]
     deleteQuery = { "serverID": serverID }
-    servercol.delete_one(deleteQuery)
-    await ctx.channel.send("Removed from the database.")
+    notDevEmbed = discord.Embed(title="Error",
+                                description="Sorry! It appears you don't have permission to use this command.",
+                                color=0xC73333)
+    if str(ctx.message.author.id) in config['developers']:
+        servercol.delete_one(deleteQuery)
+        await ctx.channel.send("Removed from the database.")
+    else:
+        await ctx.channel.send(embed=notDevEmbed)
 
 @bot.command()
 async def mkdev(ctx, userid=None, *, devName=None):
