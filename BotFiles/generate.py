@@ -1,4 +1,4 @@
-#import wikipedia
+import wikipedia
 import discord
 from random import *
 from discord.ext import commands
