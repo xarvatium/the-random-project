@@ -207,7 +207,7 @@ async def reddit(ctx):
         check_for_async=False
     )
     subreddit = r.subreddit("all")
-    submissions = [post for post in subreddit.hot(limit=100)]
+    submissions = [post for post in subreddit.hot(limit=200)]
 
     random_post_number = randint(0, 99)
     random_post = submissions[random_post_number]
