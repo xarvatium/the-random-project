@@ -1,7 +1,5 @@
 import asyncio
-global dev_list
 from generate import *
-import helpText
 import pymongo
 from pymongo import MongoClient
 mongoclient = MongoClient('mongodb://localhost:27017')
