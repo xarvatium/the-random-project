@@ -1,11 +1,15 @@
 import asyncio
-import developers
-global dev_list
 from generate import *
-import helpText
 import pymongo
 from pymongo import MongoClient
 mongoclient = MongoClient('mongodb://localhost:27017')
+
+# Having helpText assigned here will cause helptext to only get read once, reducing disk access
+helpText = {}
+with open('helpText') as helpFile:
+    helpString = helpFile.read()
+helpText['general'] = helpString.split("<general>\n")[1].split("\n</general>")[0]
+helpText['random'] = helpString.split("<random>\n")[1].split("\n</random>")[0]
 
 @bot.event
 async def on_guild_join(guild):  # Logs when the bot joins a guild (does not log ID, so don't worry)
@@ -30,11 +34,11 @@ async def help(ctx):  # The help command
                               color=0xB87DDF
                               )
     helpEmbed.add_field(name="General Commands",
-                        value=helpText.general,
+                        value=helpText['general'],
                         inline=False
                         )
     helpEmbed.add_field(name="Random Generator Commands",
-                        value=helpText.random,
+                        value=helpText['random'],
                         inline=False
                         )
     helpEmbed.set_footer(text="Creator: Xarvatium#6561", icon_url="https://cdn.discordapp.com/avatars/514866599400833034/88a61a2683879b72622d4f9990dc6d2b.png?size=128")
@@ -75,8 +79,9 @@ async def monke(ctx):  # :)
 @bot.command()
 async def repeat(ctx, *, userinput = None):  # Repeat command
     sentByMention = str(ctx.author.mention)
-    for s in ['/', ':', '***REMOVED***', '***REMOVED***', '***REMOVED***', '***REMOVED***']:  # A blacklist that changes the characters below with blank text
-        userinput.replace(s, '')
+    for s in config['bannedWords']:
+        # Reads from the bannedWords list and removes anything on the list from the text
+        userinput = userinput.replace(s, '')
     # Defining the embed to be used and it's field
     repeatEmbed = discord.Embed(description=userinput, color=0xB87DDF)
     repeatEmbed.add_field(name="Sent by:", value=sentByMention)
@@ -116,17 +121,14 @@ async def ask(ctx, *, content):  # 8Ball module (used to be a separate file but 
 # ------Developer Commands------
 @bot.command()
 async def servers(ctx):  # Developer command
-    import developers
     servers = list(bot.guilds)
     serversEmbedTitle = f"Connected on {str(len(servers))} servers"
     serversEmbedDesc = "- " + '\n- '.join(guild.name for guild in servers)
-    dev_list = developers.dev_list["Developers"]["User IDs"]
     serversEmbed = discord.Embed(title=serversEmbedTitle, description=serversEmbedDesc, color=0xB87DDF)
-
     notDevEmbed = discord.Embed(title="Error",
                                 description="Sorry! It appears you don't have permission to use this command.",
                                 color=0xC73333)
-    if ctx.message.author.id in dev_list:
+    if str(ctx.message.author.id) in config['developers']:
         await ctx.send(embed=serversEmbed)
 
     else:
@@ -135,11 +137,10 @@ async def servers(ctx):  # Developer command
 
 @bot.command()
 async def status(ctx, *, content):  # Developer command that changes the bot's status
-    dev_list = developers.dev_list["Developers"]["User IDs"]
     notDevEmbed = discord.Embed(title="Error",
                               description="Sorry! It appears you don't have permission to use this command.",
                               color=0xC73333)
-    if ctx.message.author.id in dev_list:
+    if str(ctx.message.author.id) in config['developers']:
         await bot.change_presence(
             activity=discord.Game(
                 name=content
@@ -161,11 +162,10 @@ async def database(ctx):
 
 @database.command()
 async def show(ctx):
-    dev_list = developers.dev_list["Developers"]["User IDs"]
     notDevEmbed = discord.Embed(title="Error",
                               description="Sorry! It appears you don't have permission to use this command.",
                               color=0xC73333)
-    if ctx.message.author.id in dev_list:
+    if str(ctx.message.author.id) in config['developers']:
         servers = list(bot.guilds)
         mndb = mongoclient['the-random-bot']
         servercol = mndb['servers']
@@ -183,12 +183,18 @@ async def show(ctx):
 @database.command()
 async def add(ctx, serverID, serverName):
     mndb = mongoclient['the-random-bot']
-    mndb.servers.insert_one(
-        { "serverID" : serverID,
-            "serverName": serverName
-        }
-    )
-    await ctx.channel.send("Added to the database.")
+    notDevEmbed = discord.Embed(title="Error",
+                                description="Sorry! It appears you don't have permission to use this command.",
+                                color=0xC73333)
+    if str(ctx.message.author.id) in config['developers']:
+        mndb.servers.insert_one(
+            { "serverID" : serverID,
+                "serverName": serverName
+            }
+        )
+        await ctx.channel.send("Added to the database.")
+    else:
+        await ctx.channel.send(embed=notDevEmbed)
 
 
 @database.command()
@@ -196,8 +202,72 @@ async def remove(ctx, serverID):
     mndb = mongoclient['the-random-bot']
     servercol = mndb["servers"]
     deleteQuery = { "serverID": serverID }
-    servercol.delete_one(deleteQuery)
-    await ctx.channel.send("Removed from the database.")
+    notDevEmbed = discord.Embed(title="Error",
+                                description="Sorry! It appears you don't have permission to use this command.",
+                                color=0xC73333)
+    if str(ctx.message.author.id) in config['developers']:
+        servercol.delete_one(deleteQuery)
+        await ctx.channel.send("Removed from the database.")
+    else:
+        await ctx.channel.send(embed=notDevEmbed)
+
+@bot.command()
+async def mkdev(ctx, userid=None, *, devName=None):
+    for i in ["<",">","@","!"]: # Makes @Person work too
+        userid = userid.replace(i,'')
+    notDevEmbed = discord.Embed(title="Error",
+                              description="Sorry! It appears you don't have permission to use this command.",
+                              color=0xC73333)
+    if str(ctx.message.author.id) in config['developers']:
+        if not userid or not devName:
+            await ctx.channel.send("Usage: ;mkdev <userid> <name>")
+            return
+        if userid not in config['developers']:
+            config['developers'][userid] = devName
+            await ctx.channel.send("Successfully added <@" + userid + "> as a developer")
+            with open('config.json', 'w+') as configFile:
+                json.dump(config, configFile, indent=4)
+                generate_config_reload()
+        else:
+            await ctx.channel.send("Error: " + userid + " is already a developer")
+    else:
+        await ctx.channel.send(embed=notDevEmbed)
+
+
+@bot.command()
+async def rmdev(ctx, userid=None):
+    for i in ["<",">","@","!"]: # Makes @Person work too
+        userid = userid.replace(i,'')
+    notDevEmbed = discord.Embed(title="Error",
+                              description="Sorry! It appears you don't have permission to use this command.",
+                              color=0xC73333)
+    if str(ctx.message.author.id) in config['developers']:
+        if not userid:
+            await ctx.channel.send("Usage: ;rmdev <userid>")
+            return
+        if userid in config['developers']:
+            config['developers'].pop(userid)
+            await ctx.channel.send("Successfully removed <@" + userid + "> as a developer")
+            with open('config.json', 'w+') as configFile:
+                json.dump(config, configFile, indent=4)
+                generate_config_reload()
+        else:
+            await ctx.channel.send("Error: " + userid + " is not a developer")
+    else:
+        await ctx.channel.send(embed=notDevEmbed)
+
+@bot.command()
+async def lsdev(ctx):
+    notDevEmbed = discord.Embed(title="Error",
+                              description="Sorry! It appears you don't have permission to use this command.",
+                              color=0xC73333)
+    if str(ctx.message.author.id) in config['developers']:
+        devsEmbed = discord.Embed(title="List of current developers: ")
+        for i in config['developers']:
+            devsEmbed.add_field(value=i, name=config['developers'][i], inline=False)
+        await ctx.channel.send(embed=devsEmbed)
+    else:
+        await ctx.channel.send(embed=notDevEmbed)
 
 
 # The Token initialization and Checking if config.json exists
