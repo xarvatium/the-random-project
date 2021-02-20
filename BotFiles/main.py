@@ -4,6 +4,13 @@ import pymongo
 from pymongo import MongoClient
 mongoclient = MongoClient('mongodb://localhost:27017')
 
+# Having helpText assigned here will cause helptext to only get read once, reducing disk access
+helpText = {}
+with open('helpText') as helpFile:
+    helpString = helpFile.read()
+helpText['general'] = helpString.split("<general>\n")[1].split("\n</general>")[0]
+helpText['random'] = helpString.split("<random>\n")[1].split("\n</random>")[0]
+
 @bot.event
 async def on_guild_join(guild):  # Logs when the bot joins a guild (does not log ID, so don't worry)
     servers = list(bot.guilds)
@@ -27,11 +34,11 @@ async def help(ctx):  # The help command
                               color=0xB87DDF
                               )
     helpEmbed.add_field(name="General Commands",
-                        value=helpText.general,
+                        value=helpText['general'],
                         inline=False
                         )
     helpEmbed.add_field(name="Random Generator Commands",
-                        value=helpText.random,
+                        value=helpText['random'],
                         inline=False
                         )
     helpEmbed.set_footer(text="Creator: Xarvatium#6561", icon_url="https://cdn.discordapp.com/avatars/514866599400833034/88a61a2683879b72622d4f9990dc6d2b.png?size=128")
