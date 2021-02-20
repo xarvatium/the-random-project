@@ -1,5 +1,4 @@
 .idea
 .vscode
-BotFiles/developers.py
 BotFiles/config.json
 __pycache__
