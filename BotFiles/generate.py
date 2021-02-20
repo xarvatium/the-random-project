@@ -1,5 +1,6 @@
 import wikipedia
 import discord
+import praw
 from random import *
 from discord.ext import commands
 from googleapiclient.discovery import build # Used for parsing YouTube API requests
@@ -196,9 +197,15 @@ async def random(ctx):
     await ctx.channel.send("You get a random " + generator + "!")
     await globals()[generator](ctx)
 
-""" # TODO: define r outside of the now-missing keys file
+
 @generate.command()
 async def reddit(ctx):
+    r = praw.Reddit(
+        client_id=config['reddit']['clientID'],
+        client_secret=config['reddit']['clientSecret'],
+        user_agent=config['reddit']['user_agent'],
+        check_for_async=False
+    )
     subreddit = r.subreddit("all")
     submissions = [post for post in subreddit.hot(limit=100)]
 
@@ -233,5 +240,5 @@ async def reddit(ctx):
                                          color=0xC73333)
             await ctx.channel.send(notNsfwEmbed)
     else:
-        await ctx.channel.send(embed=redditEmbed)"""
+        await ctx.channel.send(embed=redditEmbed)
 

@@ -79,8 +79,9 @@ async def monke(ctx):  # :)
 @bot.command()
 async def repeat(ctx, *, userinput = None):  # Repeat command
     sentByMention = str(ctx.author.mention)
-    for s in ['/', ':', 'nigger', 'nigga', 'nig', 'nibba']:  # A blacklist that changes the characters below with blank text
-        userinput.replace(s, '')
+    for s in config['bannedWords']:
+        # Reads from the bannedWords list and removes anything on the list from the text
+        userinput = userinput.replace(s, '')
     # Defining the embed to be used and it's field
     repeatEmbed = discord.Embed(description=userinput, color=0xB87DDF)
     repeatEmbed.add_field(name="Sent by:", value=sentByMention)
