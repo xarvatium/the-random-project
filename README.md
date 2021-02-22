@@ -47,13 +47,25 @@ Below are the developer only commands:
  - ;servers - this lists the servers the bot is in
  - ;status [status]- this changes the status of the bot <br>
 
-Note: You will have to make a file called "developers.py" with the following layout:
-```py
-dev_list = {
-    "Developers": 
-    {
-        "User IDs": [1234567890],
-        "Name/Discrim": ["Username#1234"]
+Note: You will have to make a file called "config.json" with the following layout:
+```json
+{
+    "ytApiKey": "YTKey",
+    "lastFmKey": "lastFMkey",
+    "lastFmUA": "User Agent",
+    "discordToken": "discordTOKEN",
+    "bannedWords": [
+        "word1",
+        "word2",
+        "banned word"
+    ],
+    "developers": {
+        "1234567890": "username#1234"
+    },
+    "reddit": {
+        "clientID": "personalUseScript",
+        "clientSecret": "appSecret",
+        "user_agent": "User Agent (by /u/user)"
     }
 }
 ```
