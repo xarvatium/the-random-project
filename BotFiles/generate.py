@@ -31,6 +31,13 @@ async def on_ready():
         )
     )
 
+@bot.command()
+async def random(ctx):
+    errorEmbed = discord.Embed(title="Oops!",
+                               description='Did you mean to use ";generate"?',
+                               color=0xB87DDF)
+    await ctx.channel.send(embed=errorEmbed)
+
 
 @bot.group()  # Defines the ;generate group with an error message if no argument is provided
 async def generate(ctx):
