@@ -48,7 +48,7 @@ Below are the developer only commands:
  - ;status [status]- this changes the status of the bot <br>
 
 Note: You will have to make a file called "config.json" with the following layout:
-```json
+```
 {
     "ytApiKey": "YTKey",
     "lastFmKey": "lastFMkey",
