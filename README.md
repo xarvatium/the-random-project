@@ -1,4 +1,10 @@
 # The Random Bot
+[![License](https://img.shields.io/badge/license-GNU-red)](LICENSE)
+![Discord](https://img.shields.io/discord/756682912166051851)
+![Version](https://img.shields.io/pypi/pyversions/Discord.py)
+![Grade](https://img.shields.io/codefactor/grade/github/xarvatium/the-random-project/master)
+
+
 Hello, and welcome to the GitHub page for the Random Bot. If you're curious as to what all it does, I will include sections that describe the different aspects of the bot.
 
 ### General Purpose Commands
@@ -17,7 +23,7 @@ There are 6 random commands for right now:
 ##### Article
  - This gives you a random wikipedia article with a title, summary, and url
 ##### Number
- - This gives you a number from a min/max that you **must** provide or the bot will give an error
+ - This gives you a number from a min/max that you can give, or just use it as `;generate number` and it will give a number from 1-100
 ##### Video
  - This gives you a random video from YouTube
 ##### Color
@@ -47,7 +53,7 @@ Below are the developer only commands:
  - ;servers - this lists the servers the bot is in
  - ;status [status]- this changes the status of the bot <br>
 
-Note: You will have to make a file called "config.json" with the following layout:
+Note: You can either make this yourself, or on the first run the console will take you through a wizard to make one. If you don't go through the wizard you will have to make a file called "config.json" in /BotFiles/ with the following layout:
 ```json
 {
     "ytApiKey": "YTKey",
