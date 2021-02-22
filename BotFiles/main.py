@@ -42,7 +42,7 @@ async def help(ctx):  # The help command
                         inline=False
                         )
     helpEmbed.set_footer(text="Creator: Xarvatium#6561", icon_url="https://cdn.discordapp.com/avatars/514866599400833034/88a61a2683879b72622d4f9990dc6d2b.png?size=128")
-    helpEmbed.set_author(name="The Random Bot", icon_url="https://cdn.discordapp.com/avatars/755986454907191319/5ff8f9b7b1eebb4650e8ee94e65c03d6.png?size=128")
+    helpEmbed.set_author(name="The Random Bot", icon_url="https://cdn.discordapp.com/avatars/755986454907191319/39f37a55eff9e855b449076b65837b91.png?size=128")
     message = await ctx.channel.send(embed=helpEmbed)
     await message.add_reaction("❌")
 
@@ -310,4 +310,3 @@ if __name__ == '__main__':
             config = json.load(configFile)
         generate_config_reload()
         bot.run(config['discordToken'])
-

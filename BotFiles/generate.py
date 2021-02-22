@@ -256,4 +256,3 @@ async def reddit(ctx):
             await ctx.channel.send(notNsfwEmbed)
     else:
         await ctx.channel.send(embed=redditEmbed)
-
