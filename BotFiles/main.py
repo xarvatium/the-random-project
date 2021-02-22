@@ -1,6 +1,5 @@
 import asyncio
 from generate import *
-import pymongo
 from pymongo import MongoClient
 mongoclient = MongoClient('mongodb://localhost:27017')
 
@@ -11,9 +10,9 @@ with open('helpText') as helpFile:
 helpText['general'] = helpString.split("<general>\n")[1].split("\n</general>")[0]
 helpText['random'] = helpString.split("<random>\n")[1].split("\n</random>")[0]
 
+
 @bot.event
 async def on_guild_join(guild):  # Logs when the bot joins a guild (does not log ID, so don't worry)
-    servers = list(bot.guilds)
     mndb = mongoclient['the-random-bot']
     servercol = mndb['servers']
     serverID = guild.id
