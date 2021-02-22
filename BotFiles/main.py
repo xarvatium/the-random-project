@@ -117,6 +117,15 @@ async def ask(ctx, *, content):  # 8Ball module (used to be a separate file but 
     answer = random.choice(responses)
     await ctx.channel.send(answer)
 
+@bot.command()
+async def info(ctx):
+    infoEmbed = discord.Embed(title="About the Bot",
+                               description="This is a bot that I made in my free-time because I got bored and now it's grown to a three-man development team in the span of about 6 months.\nThis bot is fully open-source and is enabled to be self-hosted if you wish (It requires a bit of setup however)",
+                               color=0xB87DDF)
+
+    infoEmbed.add_field(name="Links:",value="GitHub: https://github.com/xarvatium/the-random-project\nThe Random Hub (Development and Support Server): https://discord.gg/Ub2fSa3MSH")
+    await ctx.channel.send(embed=infoEmbed)
+
 
 # ------Developer Commands------
 @bot.command()
