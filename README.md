@@ -1,6 +1,6 @@
 # The Random Bot
 [![License](https://img.shields.io/badge/license-GNU-red)](LICENSE)
-[![Discord](https://img.shields.io/discord/756682912166051851)](https://discord.gg/3hry5EFuM4)
+[![Discord](https://img.shields.io/discord/756682912166051851?label=Development%20Discord)](https://discord.gg/3hry5EFuM4)
 [![Version](https://img.shields.io/pypi/pyversions/Discord.py)](https://pypi.org/project/discord.py/)
 [![Grade](https://img.shields.io/codefactor/grade/github/xarvatium/the-random-project/master)](https://www.codefactor.io/repository/github/xarvatium/the-random-project/branches)
 [![Issues](https://img.shields.io/github/issues/xarvatium/the-random-project)](https://github.com/xarvatium/the-random-project/issues)
