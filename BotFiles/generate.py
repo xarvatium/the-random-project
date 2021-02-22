@@ -1,26 +1,28 @@
 import wikipedia
 import discord
 import praw
-from random import *
+from random import randint, choice
 from discord.ext import commands
-from googleapiclient.discovery import build # Used for parsing YouTube API requests
+from googleapiclient.discovery import build  # Used for parsing YouTube API requests
 from PIL import Image
 import os
 import requests
-#import praw # For the r/all generator
-import json # Used for parsing the last.fm API responses
-from time import time # Used for getting the current time to avoid rate limiting
+import json  # Used for parsing the last.fm API responses
+from time import time  # Used for getting the current time to avoid rate limiting
+
 
 def generate_config_reload():
     global config 
     with open('config.json') as configFile:
         config = json.load(configFile)
 
+
 bot = commands.Bot(command_prefix=';', help_command=None)
 
 # Set a couple of variables that need to be global and persistent for random song
 lastfm_update = 0
 lastfm_tracklist = []
+
 
 @bot.event  # Sets status on start and prints that it's logged in
 async def on_ready():
@@ -30,6 +32,7 @@ async def on_ready():
             name=";help || with dice"
         )
     )
+
 
 @bot.command()
 async def random(ctx):
@@ -43,7 +46,8 @@ async def random(ctx):
 async def generate(ctx):
     if ctx.invoked_subcommand is None:
         nullEmbed = discord.Embed(title="Error",
-                                  description="Please include what to generate randomly. If you don't know what this is, use the ;help command!",
+                                  description="Please include what to generate randomly. If you don't know what this is"
+                                              ", use the ;help command!",
                                   color=0xC73333
                                   )
         await ctx.channel.send(embed=nullEmbed)
@@ -65,7 +69,7 @@ async def article(ctx):
 
 
 @generate.command()  # Random Number Generator - Generates a random number
-async def number(ctx, low: int=0, high: int=100):
+async def number(ctx, low: int = 0, high: int = 100):
     # The error it gives if there is no high or low
     numError = "There was an error! Did you make sure to give numbers and not words?"
     errorEmbed = discord.Embed(title="Error:",
@@ -91,11 +95,13 @@ async def video(ctx):
               'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '`',
               '~', '-', '_', '+', '=', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', ';', ':', '"', "'", ' ', ',',
               '.', '/', '?']
-    postfix = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
-              'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-              'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '`',
-              '~', '-', '_', '+', '=', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', ';', ':', '"', "'", ' ', ',',
-              '.', '/', '?']
+    postfix = [
+        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
+        'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+        'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '`',
+        '~', '-', '_', '+', '=', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', ';', ':', '"', "'", ' ', ',',
+        '.', '/', '?'
+    ]
 
     # This is what it uses to search
     def youtube_search():
@@ -112,7 +118,7 @@ async def video(ctx):
 
         videos = []
 
-        # This is the For statement that looks for actual YouTube videos and not just strings that fit Google's naming scheme
+        # This is the For statement that looks for actual YouTube videos and not just strings
         for search_result in searchResponse.get('items', []):
             if search_result['id']['kind'] == 'youtube#video':
                 videos.append('%s' % (search_result['id']['videoId']))
@@ -127,11 +133,11 @@ async def video(ctx):
 async def color(ctx):
     # Defines the RGB to Hex function
     def rgb_to_hex(rgb):
-        r,g,b = rgb
-        return '#%02x%02x%02x' % (r,g,b)
+        r, g, b = rgb
+        return '#%02x%02x%02x' % (r, g, b)
 
     # This sets up the variables to be used
-    colorRGB = (randint(0,255), randint(0,255), randint(0,255))
+    colorRGB = (randint(0, 255), randint(0, 255), randint(0, 255))
     colorHex = rgb_to_hex(colorRGB)
     colorDesc = "Hex Code: " + "**" + colorHex + "**" + "\n" + "RGB Code: " + "**" + str(colorRGB) + "**"
     width = 128
@@ -159,12 +165,12 @@ async def color(ctx):
 
 @generate.command()  # Grabs a random song from last.fm
 async def song(ctx, *, usertag=None):
-    global lastfm_update # This variable will be used to update old data without making multiple requests every time, so it should persist
-    global lastfm_tracklist # Will store the tracklist so it doesn't have to be called every time
+    global lastfm_update  # This variable will be used to update old data without making multiple requests every time
+    global lastfm_tracklist  # Will store the tracklist so it doesn't have to be called every time
     base_url = "http://ws.audioscrobbler.com/2.0/"
     if usertag:
-        for s in ['&','%','+','?','=','/']:
-            usertag = usertag.replace(s,'')   
+        for s in ['&', '%', '+', '?', '=', '/']:
+            usertag = usertag.replace(s, '')
     headers = {
         "user-agent": config['lastFmUA']
     }
@@ -172,32 +178,32 @@ async def song(ctx, *, usertag=None):
     if (time() - lastfm_update) > 10800:
         print('LFM Data expired!')
         lastfm_tracklist = {
-            'taglist' : [],
-            'tags' : {}
-        } # Empty lastfm tracklist with required data structure
+            'taglist': [],
+            'tags': {}
+        }  # Empty lastfm tracklist with required data structure
         tagrq = requests.get(base_url + "?method=tag.getTopTags&format=json&api_key=" + config['lastFmKey'])
-        tags = json.loads(tagrq.content.decode('UTF-8'))['toptags']['tag'] # Get the json response of tags into a list
+        tags = json.loads(tagrq.content.decode('UTF-8'))['toptags']['tag']  # Get the json response of tags into a list
         for tag in tags:
-            lastfm_tracklist['tags'][tag['name']] = [] # Create an empty list for each tag
-            lastfm_tracklist['taglist'].append(tag['name']) # Append each tag to the taglist
-        lastfm_update = time() # Update the lastfm_update time
-    if not usertag: # If no tag is specified, get a random one instead
+            lastfm_tracklist['tags'][tag['name']] = []  # Create an empty list for each tag
+            lastfm_tracklist['taglist'].append(tag['name'])  # Append each tag to the taglist
+        lastfm_update = time()  # Update the lastfm_update time
+    if not usertag:  # If no tag is specified, get a random one instead
         usertag = choice(lastfm_tracklist['taglist'])
-    elif usertag not in lastfm_tracklist['taglist']: # If a usertag is defined but is not yet in the taglist, create a new list for the usertag and add it to the taglist
-        trackrq = requests.get(base_url + "?method=tag.getTopTracks&format=json&tag=" + usertag.replace(' ','%20') +"&api_key=" + config['lastFmKey']) # Doing the webrequest here will let use check if it's a valid tag
+    elif usertag not in lastfm_tracklist['taglist']:  # If a usertag is defined but is not yet in the taglist, create a new list for the usertag and add it to the taglist
+        trackrq = requests.get(base_url + "?method=tag.getTopTracks&format=json&tag=" + usertag.replace(' ', '%20') + "&api_key=" + config['lastFmKey'])  # Doing the webrequest here will let use check if it's a valid tag
         tracks = json.loads(trackrq.content.decode('UTF-8'))
-        if tracks['tracks']['track'] != []: # If the tracklist isn't empty (indicating a bad tag)
+        if tracks['tracks']['track'] != []:  # If the tracklist isn't empty (indicating a bad tag)
             lastfm_tracklist['taglist'].append(usertag)
             lastfm_tracklist['tags'][usertag] = tracks['tracks']['track']
     try:
-        if lastfm_tracklist['tags'][usertag] == []: # If it's an empty list
-            trackrq = requests.get(base_url + "?method=tag.getTopTracks&format=json&tag=" + usertag.replace(' ','%20') +"&api_key=" + config['lastFmKey']) # Doing the webrequest here will let use check if it's a valid tag (again, but just to make sure there wasn't an issue)
+        if lastfm_tracklist['tags'][usertag] == []:  # If it's an empty list
+            trackrq = requests.get(base_url + "?method=tag.getTopTracks&format=json&tag=" + usertag.replace(' ', '%20') + "&api_key=" + config['lastFmKey'])  # Doing the webrequest here will let use check if it's a valid tag (again, but just to make sure there wasn't an issue)
             tracks = json.loads(trackrq.content.decode('UTF-8'))
-            if tracks['tracks']['track'] != []: # If the tracklist isn't empty (indicating a bad tag)
+            if tracks['tracks']['track'] != []:  # If the tracklist isn't empty (indicating a bad tag)
                 lastfm_tracklist['tags'][usertag] = tracks['tracks']['track']
         track = choice(lastfm_tracklist['tags'][usertag])
-        embed = discord.Embed(title = track['name'], color=0xB87DDF, url=track['url'])
-        embed.add_field(name="Artist",value=track['artist']['name'])
+        embed = discord.Embed(title=track['name'], color=0xB87DDF, url=track['url'])
+        embed.add_field(name="Artist", value=track['artist']['name'])
         embed.add_field(name="Tag", value=usertag)
         embed.set_footer(text="Data provided by last.fm")
         await ctx.channel.send(embed=embed)
@@ -205,9 +211,9 @@ async def song(ctx, *, usertag=None):
         await ctx.channel.send("Tag error! You may have specified an invalid tag for searching.")
 
 
-@generate.command() # Grabs a random randomizer
+@generate.command()  # Grabs a random randomizer
 async def random(ctx):
-    thingList = ['article','video','number','color','song']
+    thingList = ['article', 'video', 'number', 'color', 'song']
     generator = choice(thingList)
     await ctx.channel.send("You get a random " + generator + "!")
     await globals()[generator](ctx)
