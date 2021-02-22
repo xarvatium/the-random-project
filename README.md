@@ -1,8 +1,8 @@
 # The Random Bot
 [![License](https://img.shields.io/badge/license-GNU-red)](LICENSE)
 [![Discord](https://img.shields.io/discord/756682912166051851)](https://discord.gg/3hry5EFuM4)
-![Version](https://img.shields.io/pypi/pyversions/Discord.py)
-![Grade](https://img.shields.io/codefactor/grade/github/xarvatium/the-random-project/master)
+[![Version](https://img.shields.io/pypi/pyversions/Discord.py)](https://pypi.org/project/discord.py/)
+[![Grade](https://img.shields.io/codefactor/grade/github/xarvatium/the-random-project/master)](https://www.codefactor.io/repository/github/xarvatium/the-random-project/branches)
 
 
 Hello, and welcome to the GitHub page for the Random Bot. If you're curious as to what all it does, I will include sections that describe the different aspects of the bot.
