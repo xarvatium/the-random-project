@@ -17,7 +17,7 @@ async def on_guild_join(guild):  # Logs when the bot joins a guild (does not log
     servercol = mndb['servers']
     serverID = guild.id
     serverName = guild.name
-    serverDict = { 'serverID': serverID, "serverName": serverName }
+    serverDict = { 'serverID': serverID, "serverName": serverName, "prefix": ";" }
     dbWrite = servercol.insert_one(serverDict)
     channel = bot.get_channel(811010228945682432)
     joinDesc = "Server ID: " + str(serverID) + "\nServer Name: " + str(serverName) + "\nDatabase Result: " + str(dbWrite)
@@ -29,7 +29,7 @@ async def on_guild_join(guild):  # Logs when the bot joins a guild (does not log
 @bot.command()
 async def help(ctx):  # The help command
     helpEmbed = discord.Embed(title="Help Page",
-                              description="__Bot Prefix is: **;**__\n**<>** - optional tag\n**[]** - required tag",
+                              description="__Bot Prefix is: **{}**__\n**<>** - optional tag\n**[]** - required tag".format(prefix),
                               color=0xB87DDF
                               )
     helpEmbed.add_field(name="General Commands",
@@ -116,15 +116,14 @@ async def ask(ctx, *, content):  # 8Ball module (used to be a separate file but 
     answer = random.choice(responses)
     await ctx.channel.send(answer)
 
+
 @bot.command()
-async def info(ctx):
-    infoEmbed = discord.Embed(title="About the Bot",
-                               description="This is a bot that I made in my free-time because I got bored and now it's grown to a three-man development team in the span of about 6 months.\nThis bot is fully open-source and is enabled to be self-hosted if you wish (It requires a bit of setup however)",
-                               color=0xB87DDF)
+async def support(ctx):
+    supportEmbed = discord.Embed(title="Support",
+                                 description="Hi, if you need support, please join the [Development Server](https://discord.gg/3hry5EFuM4) or head over to the GitHub page and open an [issue](https://github.com/xarvatium/the-random-project/issues).")
+    await ctx.channel.send(embed=supportEmbed)
 
-    infoEmbed.add_field(name="Links:",value="GitHub: https://github.com/xarvatium/the-random-project\nThe Random Hub (Development and Support Server): https://discord.gg/Ub2fSa3MSH")
-    await ctx.channel.send(embed=infoEmbed)
-
+# ------Raised Permissions Commands------
 
 # ------Developer Commands------
 @bot.command()
@@ -219,6 +218,7 @@ async def remove(ctx, serverID):
     else:
         await ctx.channel.send(embed=notDevEmbed)
 
+
 @bot.command()
 async def mkdev(ctx, userid=None, *, devName=None):
     for i in ["<",">","@","!"]: # Makes @Person work too
@@ -263,6 +263,7 @@ async def rmdev(ctx, userid=None):
             await ctx.channel.send("Error: " + userid + " is not a developer")
     else:
         await ctx.channel.send(embed=notDevEmbed)
+
 
 @bot.command()
 async def lsdev(ctx):

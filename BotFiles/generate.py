@@ -7,8 +7,11 @@ from googleapiclient.discovery import build  # Used for parsing YouTube API requ
 from PIL import Image
 import os
 import requests
+from urllib.error import HTTPError
 import json  # Used for parsing the last.fm API responses
 from time import time  # Used for getting the current time to avoid rate limiting
+from pymongo import MongoClient
+mongoclient = MongoClient('mongodb://localhost:27017')
 
 
 def generate_config_reload():
@@ -17,7 +20,20 @@ def generate_config_reload():
         config = json.load(configFile)
 
 
-bot = commands.Bot(command_prefix=';', help_command=None)
+# def prefix(bot, message):
+#     global client
+#     if not message.guild:
+#         return commands.when_mentioned_or("=")(bot, message)
+#     mndb = mongoclient['the-random-bot']
+#     posts = mndb['servers']
+#     prefix = "="
+#     for x in posts.find({"serverID": message.guild.id}):
+#         prefix=x["prefix"]
+#     return commands.when_mentioned_or(prefix)(bot, message)
+
+
+bot = commands.Bot(command_prefix=";", help_command=None)
+
 
 # Set a couple of variables that need to be global and persistent for random song
 lastfm_update = 0
@@ -92,15 +108,11 @@ async def video(ctx):
     youtubeApiVersion = "v3"
     prefix = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
               'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-              'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '`',
-              '~', '-', '_', '+', '=', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', ';', ':', '"', "'", ' ', ',',
-              '.', '/', '?']
+              'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
     postfix = [
         'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
         'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-        'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '`',
-        '~', '-', '_', '+', '=', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', ';', ':', '"', "'", ' ', ',',
-        '.', '/', '?'
+        'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
     ]
 
     # This is what it uses to search
@@ -111,9 +123,9 @@ async def video(ctx):
 
         # This is the actual code that searches YouTube and gives 5 results back, and chooses one
         searchResponse = youtube.search().list(
-            q=random.choice(prefix) + str(random.randint(999, 9999)) + random.choice(postfix),
+            q=random.choice(prefix) + str(random.randint(0, 9999)) + random.choice(postfix),
             part='snippet',
-            maxResults=5
+            maxResults=1
         ).execute()
 
         videos = []
@@ -122,11 +134,18 @@ async def video(ctx):
         for search_result in searchResponse.get('items', []):
             if search_result['id']['kind'] == 'youtube#video':
                 videos.append('%s' % (search_result['id']['videoId']))
-        return videos[random.randint(0, 2)]
+        return videos[random.randint(0, 0)]
 
     # The portion that is sent to Discord, with the base URL preceding the search results
-    await ctx.channel.send("https://youtube.com/watch?v="+youtube_search())
-    print("Sent YT video")
+    attempts = 0
+    while attempts < 10:
+        try:
+            await ctx.channel.send("https://youtube.com/watch?v="+youtube_search())
+            print("Sent YT video")
+            break
+        except IndexError:
+            attempts += 1
+            print("YouTube Error Caught, trying again")
 
 
 @generate.command()  # Random Color Generator - Sends in embed and gives a file w/ HEX and RGB codes
@@ -220,15 +239,26 @@ async def random(ctx):
 
 
 @generate.command()
-async def reddit(ctx):
+async def reddit(ctx, *, sub=None):
     r = praw.Reddit(
         client_id=config['reddit']['clientID'],
         client_secret=config['reddit']['clientSecret'],
         user_agent=config['reddit']['user_agent'],
         check_for_async=False
     )
-    subreddit = r.subreddit("all")
-    submissions = [post for post in subreddit.hot(limit=200)]
+    if not sub:
+        subreddit = r.subreddit("all")
+    elif sub:
+        subreddit = r.subreddit(sub)
+
+    try:
+        submissions = [post for post in subreddit.hot(limit=200)]
+    except discord.Forbidden:
+        httpError = discord.Embed(title="Error",
+                                  description="The sub requested is either locked or hidden, please try again.",
+                                  color=0xC73333
+                                  )
+        await ctx.channel.send(embed=httpError)
 
     random_post_number = randint(0, 99)
     random_post = submissions[random_post_number]
@@ -249,8 +279,10 @@ async def reddit(ctx):
     redditEmbed.set_image(url=subUrl)
     redditEmbed.set_footer(text=embedScore)
 
+
     if subDesc != "":
         redditEmbed.add_field(name="Description:", value=subDesc, inline=False)
+
 
     if nsfw:
         if ctx.channel.is_nsfw():
@@ -259,6 +291,6 @@ async def reddit(ctx):
             notNsfwEmbed = discord.Embed(title="Error:",
                                          description="Channel is not nsfw and the command pulled an nsfw post.",
                                          color=0xC73333)
-            await ctx.channel.send(notNsfwEmbed)
+            await ctx.channel.send(embed=notNsfwEmbed)
     else:
         await ctx.channel.send(embed=redditEmbed)

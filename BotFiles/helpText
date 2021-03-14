@@ -12,4 +12,5 @@
 **;generate color** - gives a random color + it's hex and RGB code
 **;generate song** ***<tag>*** - gives a random song (when used with **<tag>**, it provides a genre)
 **;generate random** - generates ... something ... for when you want random but don't know what random you want
+**;generate reddit** - generates a hot post from /r/all (nsfw filter in development)
 </random>
