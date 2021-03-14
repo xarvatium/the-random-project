@@ -29,7 +29,7 @@ async def on_guild_join(guild):  # Logs when the bot joins a guild (does not log
 @bot.command()
 async def help(ctx):  # The help command
     helpEmbed = discord.Embed(title="Help Page",
-                              description="__Bot Prefix is: **{}**__\n**<>** - optional tag\n**[]** - required tag".format(prefix),
+                              description="__Bot Prefix is: **;**__\n**<>** - optional tag\n**[]** - required tag",#.format(prefix)
                               color=0xB87DDF
                               )
     helpEmbed.add_field(name="General Commands",
