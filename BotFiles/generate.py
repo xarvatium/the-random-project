@@ -1,6 +1,7 @@
 import wikipedia
 import discord
 import praw
+from imgurpython import ImgurClient
 from random import randint, choice
 from discord.ext import commands
 from googleapiclient.discovery import build  # Used for parsing YouTube API requests
@@ -32,7 +33,7 @@ def generate_config_reload():
 #     return commands.when_mentioned_or(prefix)(bot, message)
 
 
-bot = commands.Bot(command_prefix=";", help_command=None)
+bot = commands.Bot(command_prefix="%", help_command=None)
 
 
 # Set a couple of variables that need to be global and persistent for random song
@@ -294,3 +295,27 @@ async def reddit(ctx, *, sub=None):
             await ctx.channel.send(embed=notNsfwEmbed)
     else:
         await ctx.channel.send(embed=redditEmbed)
+
+
+@generate.command()
+async def image(ctx, *text: str):
+    import random
+    imgurID = config['imgur']['imgurID']
+    imgurSecret = config['imgur']['imgurSecret']
+    client = ImgurClient(imgurID, imgurSecret)
+    rand = random.randint(0, 29)
+    if text == ():
+        searchEmbed = discord.Embed(title="Error:",
+                                    description="Please enter a search term. (This does not support optional parameters)",
+                                    color=0xC73333)
+        await ctx.channel.send(embed=searchEmbed)
+    elif text[0] != ():
+        items = client.gallery_search(" ".join(text[0:len(text)]), advanced=None, sort='viral', window='all', page=0)
+        try:
+            await ctx.channel.send(items[rand].link)
+
+        except IndexError:
+            invalidError = discord.Embed(title="Error:",
+                                         description="Sorry! I encountered an error somewhere along the way. (Did you include a __**valid**__ subreddit to search?)",
+                                         color=0xC73333)
+            await ctx.channel.send(embed=invalidError)
