@@ -312,7 +312,8 @@ async def image(ctx, *text: str):
     elif text[0] != ():
         items = client.gallery_search(" ".join(text[0:len(text)]), advanced=None, sort='viral', window='all', page=0)
         try:
-            await ctx.channel.send(items[rand].link)
+            imageRes = items[rand]
+            await ctx.channel.send(imageRes.link)
 
         except IndexError:
             invalidError = discord.Embed(title="Error:",
