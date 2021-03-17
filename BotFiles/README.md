@@ -6,32 +6,32 @@
 [![Grade](https://img.shields.io/codefactor/grade/github/xarvatium/the-random-project/master)](https://www.codefactor.io/repository/github/xarvatium/the-random-project/branches)
 [![Issues](https://img.shields.io/github/issues/xarvatium/the-random-project)](https://github.com/xarvatium/the-random-project/issues)
 
-### General Purpose Commands
+## General Purpose Commands
 These are the general purpose commands:
-##### Help
+### Help
 This provides a list of commands (and how to use them properly)
-##### Ping
+### Ping
  - This is self-explanatory really. It just provides you the bot's latency.
-##### Ask
+### Ask
  - This is basically an 8Ball that gives you 8ball answers.
-##### Repeat
+### Repeat
  - This repeats whatever you tell it to say (some things have been blacklisted).
 
-### The Random Commands
+## The Random Commands
 There are 8 random commands for right now:
-##### Article
+### Article
  - This gives you a random wikipedia article with a title, summary, and url
-##### Number
+### Number
  - This gives you a number from a min/max that you can give, or just use it as `;generate number` and it will give a number from 1-100
-##### Video
+### Video
  - This gives you a random video from YouTube
-##### Color
+### Color
  - This gives you a random color w/ Hex and RGB formatting (might add CMYK for the kicks)
-##### Song
+### Song
  - This gives you a random song from the top 50 songs of the top 50 tags of last.fm
-##### Random
+### Random
  - This gives you a random item from one of the previously listed generators
-##### Reddit
+### Reddit
  - This gives you either a hot post from /r/all or from a subreddit of your choice (must be public)
-##### Image
+### Image
  - This gives you an image from an Imgur gallery (Requires parameters)
