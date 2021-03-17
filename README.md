@@ -61,8 +61,9 @@ Note: You can either make this yourself, or on the first run the console will ta
 ### About The Project
 This was originally a bot that just generated a Wikipedia article, but I eventually added more and more onto it. I appreciate any help regarding feature requests and bug reports, and fully support open-source technology. I do not get paid for this, and do not accept donations as of now – if the project grows I may have to move to paid hosting.
 
-### Sources:
+### References:
 [Discord.py Documentation](https://discordpy.readthedocs.io/en/latest/) <br>
 [Wikipedia's Python API](https://stackabuse.com/getting-started-with-pythons-wikipedia-api/) <br>
 [Google's API](https://console.developers.google.com/getting-started) <br>
 [last.fm's API](https://www.last.fm/api)
+[Imgur's API](https://apidocs.imgur.com/)
