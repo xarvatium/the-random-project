@@ -65,5 +65,5 @@ This was originally a bot that just generated a Wikipedia article, but I eventua
 [Discord.py Documentation](https://discordpy.readthedocs.io/en/latest/) <br>
 [Wikipedia's Python API](https://stackabuse.com/getting-started-with-pythons-wikipedia-api/) <br>
 [Google's API](https://console.developers.google.com/getting-started) <br>
-[last.fm's API](https://www.last.fm/api)
+[last.fm's API](https://www.last.fm/api) <br>
 [Imgur's API](https://apidocs.imgur.com/)
