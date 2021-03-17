@@ -8,7 +8,8 @@
 
 Hello, and welcome to the GitHub page for the Random Bot. If you're curious as to what all it does, I will include sections that describe the different aspects of the bot.
 
-Looking for a list of commands? Go to the [Bot Files](https://github.com/xarvatium/the-random-project/tree/master/BotFiles) folder!
+Looking for a list of commands? Go to the [Bot Files](https://github.com/xarvatium/the-random-project/tree/master/BotFiles) directory!
+
 ### Roadmap:
 - [x] Incorporate a homebrew Random Wikipedia Article generator
 - [x] Include a basic random number generator
@@ -18,7 +19,7 @@ Looking for a list of commands? Go to the [Bot Files](https://github.com/xarvati
 - [x] Streamlined the Help command in order to ensure legibility
 - [x] Added a few developer-only commands
 - [x] Added a random song generator
-- [x] Add a r/all puller for only channels marked nsfw (with a possibility for ignoring nsfw posts in sfw channels)
+- [x] Add an r/all puller for only channels marked nsfw (with a possibility for ignoring nsfw posts in sfw channels)
 - [x] Add an Imgur feature that draws from galleries (nsfw feature in development)
 - [ ] Maybe add a random Urban Dictionary definition for channels marked nsfw(?)
 - [ ] Add automated testing to make error catching easier in beta
