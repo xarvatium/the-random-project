@@ -18,7 +18,7 @@ This provides a list of commands (and how to use them properly)
  - This repeats whatever you tell it to say (some things have been blacklisted).
 
 ### The Random Commands
-There are 6 random commands for right now:
+There are 8 random commands for right now:
 ##### Article
  - This gives you a random wikipedia article with a title, summary, and url
 ##### Number
@@ -31,3 +31,7 @@ There are 6 random commands for right now:
  - This gives you a random song from the top 50 songs of the top 50 tags of last.fm
 ##### Random
  - This gives you a random item from one of the previously listed generators
+##### Reddit
+ - This gives you either a hot post from /r/all or from a subreddit of your choice (must be public)
+##### Image
+ - This gives you an image from an Imgur gallery (Requires parameters)
