@@ -47,8 +47,7 @@ elif platform == "win32":
         for i in modules:
             cmd("python -m pip install " + i)
     elif cmdOut != 0:
-        consent = input(
-            "An error occurred with making the virtual environment, attempting to install virtualenv. Would you like to install virtualenv (Y/N) ?").lower()
+        consent = input("An error occurred with making the virtual environment, attempting to install virtualenv. Would you like to install virtualenv (Y/N) ?").lower()
         if consent == "y":
             cmd(r"the-random-bot\Scripts\activate.bat")
             for i in modules:
