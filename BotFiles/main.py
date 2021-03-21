@@ -74,6 +74,12 @@ async def monke(ctx):  # :)
         "https://tenor.com/view/obese-monkey-fat-monkey-summer-belly-eating-lettuce-summer-look-gif-13014350"
     )
 
+@bot.command()
+async def padgett(ctx): # CORRECT
+    await ctx.send(
+        'https://cdn.discordapp.com/attachments/755584486154043432/823035419163492372/unknown.png'
+    )
+
 
 @bot.command()
 async def repeat(ctx, *, userinput = None):  # Repeat command
