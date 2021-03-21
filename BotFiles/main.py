@@ -65,18 +65,18 @@ async def help(ctx):  # The help command
 async def ping(ctx):  # ping command
     ping = bot.latency * 1000
     pingEmbed = discord.Embed(title="Pong! :ping_pong:", description=f"My latency is: **{int(ping)}ms**", color=0xB87DDF)
-    await ctx.send(embed=pingEmbed)
+    await ctx.channel.send(embed=pingEmbed)
 
 
 @bot.command()
 async def monke(ctx):  # :)
-    await ctx.send(
+    await ctx.channel.send(
         "https://tenor.com/view/obese-monkey-fat-monkey-summer-belly-eating-lettuce-summer-look-gif-13014350"
     )
 
 @bot.command()
 async def padgett(ctx): # CORRECT
-    await ctx.send(
+    await ctx.channel.send(
         'https://cdn.discordapp.com/attachments/755584486154043432/823035419163492372/unknown.png'
     )
 
