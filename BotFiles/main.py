@@ -22,6 +22,7 @@ helpText['random'] = helpString.split("<random>\n")[1].split("\n</random>")[0]
 
 @bot.event  # When the bot joins a guild, it adds the default prefix and server ID to a database table
 async def on_guild_join(guild):  # Logs when the bot joins a guild (does not log ID, so don't worry)
+    # Defining variables
     mndb = mongoclient['the-random-bot']
     servercol = mndb['servers']
     serverID = guild.id
