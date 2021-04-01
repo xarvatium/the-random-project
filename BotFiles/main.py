@@ -74,12 +74,12 @@ async def help(ctx):
 async def ping(ctx):
     ping = bot.latency * 1000  # Multiplies the latency by 1000 to get milliseconds
     pingEmbed = discord.Embed(title="Pong! :ping_pong:", description=f"My latency is: **{int(ping)}ms**", color=0xB87DDF)
-    await ctx.send(embed=pingEmbed)  # Sends the embed
+    await ctx.channel.send(embed=pingEmbed)  # Sends the embed
 
 
 @bot.command()  # :)
 async def monke(ctx):
-    await ctx.send(
+    await ctx.channel.send(
         "https://tenor.com/view/obese-monkey-fat-monkey-summer-belly-eating-lettuce-summer-look-gif-13014350"
     )
 
