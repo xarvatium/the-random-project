@@ -1,17 +1,21 @@
-import wikipedia
-import discord
-import praw
-from imgurpython import ImgurClient
-from random import randint, choice
-from discord.ext import commands
+import wikipedia  # Used for the Wikipedia API
+import discord  # Used for Discord's API
+import praw  # Used to parse Reddit data
+from imgurpython import ImgurClient  # Used for Imgur's API
+from random import randint, choice  # Used for the homebrew generators
+from discord.ext import commands  # Used to have commands in the bot
 from googleapiclient.discovery import build  # Used for parsing YouTube API requests
-from PIL import Image
-import os
-import requests
-from urllib.error import HTTPError
+from PIL import Image  # Pillow, used for the image generator in ;generate color
+import os  # Used to find specific files in various different commands
+import requests  #
 import json  # Used for parsing the last.fm API responses
 from time import time  # Used for getting the current time to avoid rate limiting
 from pymongo import MongoClient
+
+
+
+
+
 mongoclient = MongoClient('mongodb://localhost:27017')
 
 
@@ -51,7 +55,7 @@ async def on_ready():
     )
 
 
-@bot.command()
+@bot.command()  # Making sure the users don't do ;random instead of ;generate
 async def random(ctx):
     errorEmbed = discord.Embed(title="Oops!",
                                description='Did you mean to use ";generate"?',
@@ -61,23 +65,25 @@ async def random(ctx):
 
 @bot.group()  # Defines the ;generate group with an error message if no argument is provided
 async def generate(ctx):
-    if ctx.invoked_subcommand is None:
+    if ctx.invoked_subcommand is None:  # Checking if a subcommand is being called
         nullEmbed = discord.Embed(title="Error",
                                   description="Please include what to generate randomly. If you don't know what this is"
                                               ", use the ;help command!",
                                   color=0xC73333
                                   )
-        await ctx.channel.send(embed=nullEmbed)
+        await ctx.channel.send(embed=nullEmbed)  # Sends the error if there is no subcommand provided
 
 
 @generate.command()  # Random Wikipedia article Generator - Generates a random wikipedia article
 async def article(ctx):
-    wiki_page = wikipedia.random(1)
-    wiki_load = wikipedia.page(wiki_page)
-    wikiEmbed = discord.Embed(title=wikipedia.page(wiki_page).title,
-                              description=wikipedia.summary(wiki_page),
+    # Defining variables
+    wikiPage = wikipedia.random(1)
+    wikiLoad = wikipedia.page(wikiPage)
+    wikiEmbed = discord.Embed(title=wikipedia.page(wikiPage).title,
+                              description=wikipedia.summary(wikiPage),
                               color=0xB87DDF)
-    wikiEmbed.add_field(name="URL", value=wiki_load.url, inline=False)
+    # Adding a field with the URL to the embed
+    wikiEmbed.add_field(name="URL", value=wikiLoad.url, inline=False)
     try:
         await ctx.channel.send(embed=wikiEmbed)
         print("Sent Wiki Article")
@@ -103,7 +109,6 @@ async def number(ctx, low: int = 0, high: int = 100):
 @generate.command()  # Random YouTube Video Generator - Gives a random YouTube video
 async def video(ctx):
     import random
-    global config
     # Defines the variables to be used
     youtubeApiServiceName = 'youtube'
     youtubeApiVersion = "v3"
@@ -139,7 +144,7 @@ async def video(ctx):
 
     # The portion that is sent to Discord, with the base URL preceding the search results
     attempts = 0
-    while attempts < 10:
+    while attempts < 10:  # Due to a strange error, I have it set to iterate 10 times until it succeeds
         try:
             await ctx.channel.send("https://youtube.com/watch?v="+youtube_search())
             print("Sent YT video")
@@ -261,15 +266,15 @@ async def reddit(ctx, *, sub=None):
                                   )
         await ctx.channel.send(embed=httpError)
 
-    random_post_number = randint(0, 99)
-    random_post = submissions[random_post_number]
-    subTitle = random_post.title
-    subAuth = random_post.author
-    subDesc = random_post.selftext
-    subLink = "https://www.reddit.com" + random_post.permalink
-    subScore = random_post.score
-    subUrl = random_post.url
-    nsfw = random_post.over_18
+    randomPostNumber = randint(0, 99)
+    randomPost = submissions[randomPostNumber]
+    subTitle = randomPost.title
+    subAuth = randomPost.author
+    subDesc = randomPost.selftext
+    subLink = "https://www.reddit.com" + randomPost.permalink
+    subScore = randomPost.score
+    subUrl = randomPost.url
+    nsfw = randomPost.over_18
 
     embedAuth = "/u/" + str(subAuth)
     embedScore = "Submission Score: " + str(subScore)

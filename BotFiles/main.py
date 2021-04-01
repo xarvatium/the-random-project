@@ -1,7 +1,16 @@
+# ---------------------------------------
+# Made by Xarvatium#6561 with support from David J Horine#6457 and mdp189#8180
+# --My Socials--
+# Github: https://github.com/xarvatium
+# ---------------------------------------
+
 import asyncio
 from generate import *
 from pymongo import MongoClient
 mongoclient = MongoClient('mongodb://localhost:27017')
+
+
+
 
 # Having helpText assigned here will cause helptext to only get read once, reducing disk access
 helpText = {}
@@ -11,7 +20,7 @@ helpText['general'] = helpString.split("<general>\n")[1].split("\n</general>")[0
 helpText['random'] = helpString.split("<random>\n")[1].split("\n</random>")[0]
 
 
-@bot.event
+@bot.event  # When the bot joins a guild, it adds the default prefix and server ID to a database table
 async def on_guild_join(guild):  # Logs when the bot joins a guild (does not log ID, so don't worry)
     mndb = mongoclient['the-random-bot']
     servercol = mndb['servers']
@@ -26,63 +35,56 @@ async def on_guild_join(guild):  # Logs when the bot joins a guild (does not log
 
 
 # ------General Commands------
-@bot.command()
-async def help(ctx):  # The help command
+@bot.command()  # The help command
+async def help(ctx):
     helpEmbed = discord.Embed(title="Help Page",
-                              description="__Bot Prefix is: **;**__\n**<>** - optional tag\n**[]** - required tag",#.format(prefix)
+                              description="__Bot Prefix is: **;**__\n**<>** - optional tag\n**[]** - required tag",  #.format(prefix)
                               color=0xB87DDF
-                              )
+                              )  # Defines the main portion of the help embed
     helpEmbed.add_field(name="General Commands",
                         value=helpText['general'],
                         inline=False
-                        )
+                        )  # Defines the General Commands category
     helpEmbed.add_field(name="Random Generator Commands",
                         value=helpText['random'],
                         inline=False
-                        )
+                        )  # Defines the random portion of the section
     helpEmbed.set_footer(text="Creator: Xarvatium#6561", icon_url="https://cdn.discordapp.com/avatars/514866599400833034/88a61a2683879b72622d4f9990dc6d2b.png?size=128")
     helpEmbed.set_author(name="The Random Bot", icon_url="https://cdn.discordapp.com/avatars/755986454907191319/39f37a55eff9e855b449076b65837b91.png?size=128")
-    message = await ctx.channel.send(embed=helpEmbed)
+    message = await ctx.channel.send(embed=helpEmbed)  # Sends the Embed
     await message.add_reaction("❌")
 
-    def check(reaction, user):
+    def check(reaction, user): # Checks and deletes the menu after no interaction
         return user == ctx.author and str(reaction.emoji) in ["❌"]
         # This makes sure nobody except the command sender can interact with the "menu".
 
     while True:
-        try:
+        try:  # Makes sure the timer doesn't run out
             reaction, user = await bot.wait_for("reaction_add", timeout=180, check=check)
-            # waiting for a reaction to be added - times out after x seconds, 60 in this
+            # Waiting for a reaction to be added - times out after x seconds, 60 in this
             if str(reaction.emoji) == "❌":
                 await message.delete()
-        except asyncio.TimeoutError:
+        except asyncio.TimeoutError:  # Deletes the message after x seconds
             await message.delete()
             break
-            # ending the loop if user doesn't react after x seconds
 
 
-@bot.command()
-async def ping(ctx):  # ping command
-    ping = bot.latency * 1000
+@bot.command()  # Ping command
+async def ping(ctx):
+    ping = bot.latency * 1000  # Multiplies the latency by 1000 to get milliseconds
     pingEmbed = discord.Embed(title="Pong! :ping_pong:", description=f"My latency is: **{int(ping)}ms**", color=0xB87DDF)
-    await ctx.channel.send(embed=pingEmbed)
+    await ctx.send(embed=pingEmbed)  # Sends the embed
 
 
-@bot.command()
-async def monke(ctx):  # :)
-    await ctx.channel.send(
+@bot.command()  # :)
+async def monke(ctx):
+    await ctx.send(
         "https://tenor.com/view/obese-monkey-fat-monkey-summer-belly-eating-lettuce-summer-look-gif-13014350"
     )
 
-@bot.command()
-async def padgett(ctx): # CORRECT
-    await ctx.channel.send(
-        'https://cdn.discordapp.com/attachments/755584486154043432/823035419163492372/unknown.png'
-    )
 
-
-@bot.command()
-async def repeat(ctx, *, userinput = None):  # Repeat command
+@bot.command()  # Repeat command
+async def repeat(ctx, *, userinput = None):
     sentByMention = str(ctx.author.mention)
     for s in config['bannedWords']:
         # Reads from the bannedWords list and removes anything on the list from the text
@@ -108,31 +110,35 @@ async def repeat(ctx, *, userinput = None):  # Repeat command
         noUserIn = discord.Embed(title="Error",
                                     description="Sorry! It appears you didn't include something for me to repeat!",
                                     color=0xC73333
-                                )
+                                )  # Makes the embed for if there is no user input
         await ctx.channel.send(embed=noUserIn)
 
 
-@bot.command()
-async def ask(ctx, *, content):  # 8Ball module (used to be a separate file but caused issues)
+@bot.command()  # 8Ball module (used to be a separate file but caused issues)
+async def ask(ctx, *, content):
     import random
+    # Defines the array of responses
     responses = ["It is certain", "Without a doubt", "You may rely on it", "Yes, definitely", "It is decidedly so",
             "As I see it, yes", "Most likely", "Yes", "Outlook good", "Signs point to yes", "Reply hazy try again",
             "Better not tell you now", "Ask again later", "Cannot predict now", "Concentrate and ask again",
             "Don't count on it", "Outlook not so good", "My sources say no", "Very doubtful", "My reply is no"]
-    answer = random.choice(responses)
-    await ctx.channel.send(answer)
+    answer = random.choice(responses)  # Gets a random response
+    await ctx.channel.send(answer)  # Sends the answer
 
 
-@bot.command()
+@bot.command()  # Support Command
 async def support(ctx):
     supportEmbed = discord.Embed(title="Support",
                                  description="Hi, if you need support, please join the [Development Server](https://discord.gg/3hry5EFuM4) or head over to the GitHub page and open an [issue](https://github.com/xarvatium/the-random-project/issues).")
     await ctx.channel.send(embed=supportEmbed)
 
-# ------Raised Permissions Commands------
+# /\ General Purpose Commands /\
+
+# \/ Raised Permissions Commands \/
+
 
 # ------Developer Commands------
-@bot.command()
+@bot.command()  # Lists servers the bot is in
 async def servers(ctx):  # Developer command
     servers = list(bot.guilds)
     serversEmbedTitle = f"Connected on {str(len(servers))} servers"
@@ -148,7 +154,7 @@ async def servers(ctx):  # Developer command
         await ctx.channel.send(embed=notDevEmbed)
 
 
-@bot.command()
+@bot.command()  # Changes the status
 async def status(ctx, *, content):  # Developer command that changes the bot's status
     notDevEmbed = discord.Embed(title="Error",
                               description="Sorry! It appears you don't have permission to use this command.",
@@ -163,106 +169,108 @@ async def status(ctx, *, content):  # Developer command that changes the bot's s
         await ctx.channel.send(embed=notDevEmbed)
 
 
-@bot.group()
+@bot.group()  # Sets the database command group
 async def database(ctx):
-    if ctx.invoked_subcommand is None:
+    if ctx.invoked_subcommand is None:  # Gives an error if no subcommand is given
         nullEmbed = discord.Embed(title="Error",
                                   description="Please use 'show' or 'add' to interact with the database",
                                   color=0xC73333
-                                  )
+                                  )  # Error Embed
         await ctx.channel.send(embed=nullEmbed)
 
 
-@database.command()
+@database.command()  # Shows the database
 async def show(ctx):
     notDevEmbed = discord.Embed(title="Error",
                               description="Sorry! It appears you don't have permission to use this command.",
-                              color=0xC73333)
-    if str(ctx.message.author.id) in config['developers']:
-        servers = list(bot.guilds)
-        mndb = mongoclient['the-random-bot']
-        servercol = mndb['servers']
-        dbquery = servercol.find()
+                              color=0xC73333)  # Error Embed
+    if str(ctx.message.author.id) in config['developers']:  # Checks if user is a developer
+        servers = list(bot.guilds)  # Gets a list of servers
+        mndb = mongoclient['the-random-bot']  # Connects to the database
+        servercol = mndb['servers']  # Gets the table
+        dbquery = servercol.find()  # Gets the column to iterate through
         empty = ""
         entry = 1
-        for data in dbquery:
-            empty += "```md\n# Entry " + str(entry) + ":\n" + str(data) + "```\n"
+        for data in dbquery:  # Loops through the query
+            empty += "```md\n# Entry " + str(entry) + ":\n" + str(data) + "```\n"  # Appends to the empty string
             entry += 1
-        await ctx.channel.send(empty)
+        await ctx.channel.send(empty)  # Sends the result
     else:
         await ctx.channel.send(embed=notDevEmbed)
 
 
-@database.command()
+@database.command()  # Manually adds an entry to the database [ONLY TO BE USED IN TESTING]
 async def add(ctx, serverID, serverName):
-    mndb = mongoclient['the-random-bot']
+    mndb = mongoclient['the-random-bot']  # Connects to the database
     notDevEmbed = discord.Embed(title="Error",
                                 description="Sorry! It appears you don't have permission to use this command.",
-                                color=0xC73333)
-    if str(ctx.message.author.id) in config['developers']:
+                                color=0xC73333)  # Error embed
+    if str(ctx.message.author.id) in config['developers']:  # Checks if someone is in the developers dictionary
         mndb.servers.insert_one(
             { "serverID" : serverID,
                 "serverName": serverName
             }
-        )
+        )  # Adds to the new entry to the database
         await ctx.channel.send("Added to the database.")
     else:
         await ctx.channel.send(embed=notDevEmbed)
 
 
-@database.command()
+@database.command()  # Manually removes an entry from the database [ONLY TO BE USED IN TESTING]
 async def remove(ctx, serverID):
-    mndb = mongoclient['the-random-bot']
-    servercol = mndb["servers"]
-    deleteQuery = { "serverID": serverID }
+    mndb = mongoclient['the-random-bot']  # Connects to the database
+    servercol = mndb["servers"]  # The column to be used
+    deleteQuery = { "serverID": serverID }  # The query to be deleted
     notDevEmbed = discord.Embed(title="Error",
                                 description="Sorry! It appears you don't have permission to use this command.",
-                                color=0xC73333)
-    if str(ctx.message.author.id) in config['developers']:
-        servercol.delete_one(deleteQuery)
+                                color=0xC73333)  # Error Embed
+    if str(ctx.message.author.id) in config['developers']:  # Checks if someone is in the developer dictionary
+        servercol.delete_one(deleteQuery)  # Deletes the entry
         await ctx.channel.send("Removed from the database.")
     else:
         await ctx.channel.send(embed=notDevEmbed)
 
 
-@bot.command()
+@bot.command()  # Makes a developer
 async def mkdev(ctx, userid=None, *, devName=None):
-    for i in ["<",">","@","!"]: # Makes @Person work too
+    for i in ["<",">","@","!"]:  # Makes @Person work too
         userid = userid.replace(i,'')
+
+    # Embed giving an error if the user is not in the developer array in the config.json file
     notDevEmbed = discord.Embed(title="Error",
                               description="Sorry! It appears you don't have permission to use this command.",
                               color=0xC73333)
-    if str(ctx.message.author.id) in config['developers']:
-        if not userid or not devName:
+    if str(ctx.message.author.id) in config['developers']:  # Checking if a user is a developer
+        if not userid or not devName:  # Checking if a user gave proper arguments
             await ctx.channel.send("Usage: ;mkdev <userid> <name>")
             return
-        if userid not in config['developers']:
+        if userid not in config['developers']:  # Checking if a user's id is not in the developer section
             config['developers'][userid] = devName
-            await ctx.channel.send("Successfully added <@" + userid + "> as a developer")
-            with open('config.json', 'w+') as configFile:
+            await ctx.channel.send("Successfully added <@" + userid + "> as a developer")  # Sends a success message
+            with open('config.json', 'w+') as configFile:  # Opens the config.json file
                 json.dump(config, configFile, indent=4)
                 generate_config_reload()
-        else:
+        else:  # Checks if a user is already a developer
             await ctx.channel.send("Error: " + userid + " is already a developer")
-    else:
+    else:  # What sends the notDevEmbed
         await ctx.channel.send(embed=notDevEmbed)
 
 
-@bot.command()
+@bot.command()  # Removes a developer
 async def rmdev(ctx, userid=None):
     for i in ["<",">","@","!"]: # Makes @Person work too
         userid = userid.replace(i,'')
     notDevEmbed = discord.Embed(title="Error",
                               description="Sorry! It appears you don't have permission to use this command.",
-                              color=0xC73333)
-    if str(ctx.message.author.id) in config['developers']:
-        if not userid:
+                              color=0xC73333)  # Error Embed
+    if str(ctx.message.author.id) in config['developers']:  # Checks if someone is in the developer dictionary
+        if not userid:  # Error to send if no ID is defined
             await ctx.channel.send("Usage: ;rmdev <userid>")
             return
-        if userid in config['developers']:
-            config['developers'].pop(userid)
+        if userid in config['developers']:  # Continues if an ID is defined
+            config['developers'].pop(userid)  # Adds ID to the dictionary
             await ctx.channel.send("Successfully removed <@" + userid + "> as a developer")
-            with open('config.json', 'w+') as configFile:
+            with open('config.json', 'w+') as configFile:  # Writes to config.json
                 json.dump(config, configFile, indent=4)
                 generate_config_reload()
         else:
@@ -271,14 +279,14 @@ async def rmdev(ctx, userid=None):
         await ctx.channel.send(embed=notDevEmbed)
 
 
-@bot.command()
+@bot.command()  # Lists the developers
 async def lsdev(ctx):
     notDevEmbed = discord.Embed(title="Error",
                               description="Sorry! It appears you don't have permission to use this command.",
-                              color=0xC73333)
-    if str(ctx.message.author.id) in config['developers']:
+                              color=0xC73333)  # Error Embed
+    if str(ctx.message.author.id) in config['developers']:  # Checks if user is in the developer dictionary
         devsEmbed = discord.Embed(title="List of current developers: ")
-        for i in config['developers']:
+        for i in config['developers']:  # Iterates through all developers in the dictionary
             devsEmbed.add_field(value=i, name=config['developers'][i], inline=False)
         await ctx.channel.send(embed=devsEmbed)
     else:
