@@ -17,8 +17,8 @@ helpText = {}
 with open('helpText') as helpFile:
     helpString = helpFile.read()
 helpText['general'] = helpString.split("<general>\n")[1].split("\n</general>")[0]
-helpText['random'] = helpString.split("<random>\n")[1].split("\n</random>")[0]
-
+helpText['random1'] = helpString.split("<random1>\n")[1].split("\n</random1>")[0]
+helpText['random2'] = helpString.split("<random2>\n")[1].split("\n</random2>")[0]
 
 @bot.event  # When the bot joins a guild, it adds the default prefix and server ID to a database table
 async def on_guild_join(guild):  # Logs when the bot joins a guild (does not log ID, so don't worry)
@@ -46,9 +46,13 @@ async def help(ctx):
                         value=helpText['general'],
                         inline=False
                         )  # Defines the General Commands category
-    helpEmbed.add_field(name="Random Generator Commands",
-                        value=helpText['random'],
-                        inline=False
+    helpEmbed.add_field(name="\_\_\_\_\_\_\_Random Generator Commands\_\_\_\_\_\_\_",
+                        value=helpText['random1'],
+                        inline=True
+                        )  # Defines the random portion of the section
+    helpEmbed.add_field(name="\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_",
+                        value=helpText['random2'],
+                        inline=True
                         )  # Defines the random portion of the section
     helpEmbed.add_field(name="Support",
                         value="If you need support, please join the [Development Server](https://discord.gg/3hry5EFuM4) or head over to the GitHub page and open an [issue](https://github.com/xarvatium/the-random-project/issues).",
@@ -133,20 +137,10 @@ async def ask(ctx, *, content):
     await ctx.channel.send(answer)  # Sends the answer
 
 
-@bot.command()  # Support Command
-async def support(ctx):
-    supportEmbed = discord.Embed(title="Support",
-                                 description="Hi, if you need support, please join the [Development Server](https://discord.gg/3hry5EFuM4) or head over to the GitHub page and open an [issue](https://github.com/xarvatium/the-random-project/issues).")
-    await ctx.channel.send(embed=supportEmbed)
-
-
 @bot.command() # Fibonacci nth number
 async def fibonacci(ctx, num: int):
     fibArray = [0, 1]
-    fiboError = discord.Embed(title="Invalid Input",
-                              description="Did you use a negative, invalid, or an input that's too high?",
-                              color=0xC73333
-                              )
+
     def fibonacci(n):
         if n < 0:
             raise ValueError("Cannot use below 0")
@@ -163,9 +157,41 @@ async def fibonacci(ctx, num: int):
                                        color=0xB87DDF)
         await ctx.channel.send(embed=fibonacciEmbed)
     except:
+        fiboError = discord.Embed(title="Invalid Input",
+                                  description="Did you use a negative, invalid, or an input that's too high?",
+                                  color=0xC73333
+                                  )
         await ctx.channel.send(embed=fiboError)
 
 
+@bot.command() # Dice roll
+async def roll(ctx, sides: int = 6):
+    if len(str(sides)) > 256:
+        tooBigEmbed = discord.Embed(title="Error: Too Long",
+                                    description="You entered a number that filled up the embed's title, please use a shorter one.",
+                                    color=0xC73333
+                                    )
+        await ctx.channel.send(embed=tooBigEmbed)
+
+    elif sides < 0:
+        negEmbed = discord.Embed(title="...",
+                                    description=f"*Somehow rolls a {sides} sided die*\n\nGood job, you broke the laws of physics. As we speak a black hole has formed and will envelop the universe in less than 24 hours. Hope you're happy jerk.",
+                                    color=0xC73333
+                                    )
+        await ctx.channel.send(embed=negEmbed)
+
+    elif sides == 0:
+        zeroEmbed = discord.Embed(title="Yeah, sure",
+                                    description="Good luck with that.",
+                                    color=0xC73333
+                                    )
+        await ctx.channel.send(embed=zeroEmbed)
+    else:
+        roll = randint(1, sides)
+        dieEmbed = discord.Embed(title=f"You Rolled a {sides} sided die",
+                                 description=f"You rolled a __**{roll}**__!",
+                                 color=0xB87DDF)
+        await ctx.channel.send(embed=dieEmbed)
 # /\ General Purpose Commands /\
 
 # \/ Raised Permissions Commands \/
