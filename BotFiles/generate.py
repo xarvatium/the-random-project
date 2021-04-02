@@ -94,13 +94,14 @@ async def article(ctx):
 
 @generate.command()  # Random Number Generator - Generates a random number
 async def number(ctx, low: int = 0, high: int = 100, type=None):
+    if low > high: low, high = high, low
     # The error it gives if there is no high or low
     numError = "There was an error! Did you make sure to give numbers and not words?"
     errorEmbed = discord.Embed(title="Error:",
                                description=numError,
                                color=0xC73333)
     ran = randint(low, high)
-    numEmbed = discord.Embed(title="Random Number", description=ran, color=0xB87DDF)
+    numEmbed = discord.Embed(title=f"Your Random Number Between {low} and {high} is", description=ran, color=0xB87DDF)
     if type is None:
         try:
             await ctx.channel.send(embed=numEmbed)

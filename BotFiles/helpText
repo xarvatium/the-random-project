@@ -2,6 +2,7 @@
 <general>
 **;ask *[question]*** - gives 8Ball answers
 **;fibonacci *[number]*** - gives the Nth number in the Fibonacci sequence
+**;pi *[digit]*** - gives the Nth number in Pi
 **;ping** - checks the bot's latency
 **;repeat *[text to repeat]*** - repeats what you say
 **;roll *[sides]*** - rolls a Nth sided die

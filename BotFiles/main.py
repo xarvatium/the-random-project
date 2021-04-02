@@ -7,6 +7,7 @@
 import asyncio
 from generate import *
 from pymongo import MongoClient
+import decimal
 mongoclient = MongoClient('mongodb://localhost:27017')
 
 
@@ -192,6 +193,76 @@ async def roll(ctx, sides: int = 6):
                                  description=f"You rolled a __**{roll}**__!",
                                  color=0xB87DDF)
         await ctx.channel.send(embed=dieEmbed)
+
+
+@bot.command() # Calculate Pi to the Nth digit using Chudnovsky's Algorithm
+async def pi(ctx, num: int):
+
+    #def sqrt(n, m):
+    #    m1 = 10 ** 16
+    #    m2 = float((n * m1) // m) / m1
+    #    b = (int(m1 * math.sqrt(m2)) * m) // m1
+    #    n_m = n * m
+    #    while True:
+    #        a = b
+    #        b = (b + n_m // b) // 2
+    #        if b == a:
+    #            break
+    #    return b
+    #
+    #def power(n):
+    #    if n == 0:
+    #        return 1
+    #    r = power(n // 2)
+    #    if n % 2 == 0:
+    #        return r * r
+    #    return r * r * 10
+    #
+    #def pi():
+    #    m = power(100000)
+    #    c = (640320 ** 3) // 24
+    #    n = 1
+    #    ak = m
+    #    asum = m
+    #    bsum = 0
+    #    while ak != 0:
+    #        ak *= -(6 * n - 5) * (2 * n - 1) * (6 * n - 1)
+    #        ak //= n * n * n * c
+    #        asum += ak
+    #        bsum += n * ak
+    #        n = n + 1
+    #        result = (426880 * sqrt(10005 * m, m) * m) // (13591409 * asum + 545140134 * bsum)
+    #        return result
+
+    def compute_pi(n):
+        decimal.getcontext().prec = n + 1
+        C = 426880 * decimal.Decimal(10005).sqrt()
+        K = 6.
+        M = 1.
+        X = 1
+        L = 13591409
+        S = L
+        for i in range(1, n):
+            M = M * (K ** 3 - 16 * K) / ((i + 1) ** 3)
+            L += 545140134
+            X *= -262537412640768000
+            S += decimal.Decimal(M * L) / X
+        pi = C / S
+        return pi
+    try:
+        piEmbed = discord.Embed(title=f"Pi to the {num}th Digit is:",
+                                description=str(compute_pi(num)),
+                                color=0xB87DDF
+                                )
+        piEmbed.set_footer(text="Disclaimer: Value might be off by a slight amount due to rounding")
+        await ctx.channel.send(embed=piEmbed)
+    except:
+        piError = discord.Embed(title="Error: Invalid Input",
+                                description="Invalid input, did you use a negative number?",
+                                color=0xC73333
+                                )
+        await ctx.channel.send(embed=piError)
+
 # /\ General Purpose Commands /\
 
 # \/ Raised Permissions Commands \/
