@@ -141,7 +141,7 @@ async def number(ctx, low: int = 0, high: int = 100, type=None):
         # Gets 1 prime number from the range
         for i in range(1):
             boundsError = discord.Embed(title="Bounds Error",
-                                        description="Sorry, it appears I was not made to handle your cryptographical needs. Please try a low below 2^32 and a high below 2^64",
+                                        description="Sorry, it appears I was not made to handle your cryptographical needs. Please try a high and low below 2^20",
                                         color=0xC73333
                                         )
             if low >= 1048576 or high >= 1048576:

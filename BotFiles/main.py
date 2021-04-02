@@ -35,7 +35,7 @@ async def on_guild_join(guild):  # Logs when the bot joins a guild (does not log
     await channel.send(embed=joinServerEmbed)
 
 
-# ------General Commands------
+# \/ General Commands \/
 @bot.command()  # The help command
 async def help(ctx):
     helpEmbed = discord.Embed(title="Help Page",
@@ -138,6 +138,33 @@ async def support(ctx):
     supportEmbed = discord.Embed(title="Support",
                                  description="Hi, if you need support, please join the [Development Server](https://discord.gg/3hry5EFuM4) or head over to the GitHub page and open an [issue](https://github.com/xarvatium/the-random-project/issues).")
     await ctx.channel.send(embed=supportEmbed)
+
+
+@bot.command() # Fibonacci nth number
+async def fibonacci(ctx, num: int):
+    fibArray = [0, 1]
+    fiboError = discord.Embed(title="Invalid Input",
+                              description="Did you use a negative, invalid, or an input that's too high?",
+                              color=0xC73333
+                              )
+    def fibonacci(n):
+        if n < 0:
+            raise ValueError("Cannot use below 0")
+        elif n <= len(fibArray):
+            return fibArray[n - 1]
+        else:
+            temp_fib = fibonacci(n - 1) + fibonacci(n - 2)
+            fibArray.append(temp_fib)
+            return temp_fib
+    try:
+        fibNum = fibonacci(num)
+        fibonacciEmbed = discord.Embed(title=f"The {num}th Number of the Fibonacci Sequence is:",
+                                       description=fibNum,
+                                       color=0xB87DDF)
+        await ctx.channel.send(embed=fibonacciEmbed)
+    except:
+        await ctx.channel.send(embed=fiboError)
+
 
 # /\ General Purpose Commands /\
 
