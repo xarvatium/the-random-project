@@ -50,8 +50,14 @@ async def help(ctx):
                         value=helpText['random'],
                         inline=False
                         )  # Defines the random portion of the section
-    helpEmbed.set_footer(text="Creator: Xarvatium#6561", icon_url="https://cdn.discordapp.com/avatars/514866599400833034/88a61a2683879b72622d4f9990dc6d2b.png?size=128")
-    helpEmbed.set_author(name="The Random Bot", icon_url="https://cdn.discordapp.com/avatars/755986454907191319/39f37a55eff9e855b449076b65837b91.png?size=128")
+    helpEmbed.add_field(name="Support",
+                        value="If you need support, please join the [Development Server](https://discord.gg/3hry5EFuM4) or head over to the GitHub page and open an [issue](https://github.com/xarvatium/the-random-project/issues).",
+                        inline=False
+                        )
+    helpEmbed.set_footer(text="Creator: Xarvatium#6561",
+                         icon_url="https://cdn.discordapp.com/avatars/514866599400833034/afa0052cc224e2d4135d565b564ff5d8.png?size=128"
+                         )
+    helpEmbed.set_author(name="The Random Bot", url="https://github.com/xarvatium/the-random-project", icon_url="https://cdn.discordapp.com/avatars/755986454907191319/39f37a55eff9e855b449076b65837b91.png?size=128")
     message = await ctx.channel.send(embed=helpEmbed)  # Sends the Embed
     await message.add_reaction("❌")
 
