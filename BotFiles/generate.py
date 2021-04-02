@@ -11,6 +11,7 @@ import requests  #
 import json  # Used for parsing the last.fm API responses
 from time import time  # Used for getting the current time to avoid rate limiting
 from pymongo import MongoClient
+import numpy as np
 
 
 
@@ -92,18 +93,87 @@ async def article(ctx):
 
 
 @generate.command()  # Random Number Generator - Generates a random number
-async def number(ctx, low: int = 0, high: int = 100):
+async def number(ctx, low: int = 0, high: int = 100, type=None):
     # The error it gives if there is no high or low
     numError = "There was an error! Did you make sure to give numbers and not words?"
     errorEmbed = discord.Embed(title="Error:",
                                description=numError,
-                               color=0xB87DDF)
-    try:
-        ran = randint(low, high)
-        numEmbed = discord.Embed(title="Random Number", description=ran, color=0xB87DDF)
-        await ctx.channel.send(embed=numEmbed)
-    except discord.Forbidden:
-        await ctx.channel.send(embed=errorEmbed)
+                               color=0xC73333)
+    ran = randint(low, high)
+    numEmbed = discord.Embed(title="Random Number", description=ran, color=0xB87DDF)
+    if type is None:
+        try:
+            await ctx.channel.send(embed=numEmbed)
+        except discord.Forbidden:
+            await ctx.channel.send(embed=errorEmbed)
+    elif type.lower() == "prime":
+        def getRandomPrimeInteger(bounds):
+
+            for i in range(bounds.__len__() - 1):
+                if bounds[i + 1] > bounds[i]:
+                    x = bounds[i] + np.random.randint(bounds[i + 1] - bounds[i])
+                    if isPrime(x):
+                        return x
+
+                else:
+                    if isPrime(bounds[i]):
+                        return bounds[i]
+
+                if isPrime(bounds[i + 1]):
+                    return bounds[i + 1]
+
+            newBounds = [0 for i in range(2 * bounds.__len__() - 1)]
+            newBounds[0] = bounds[0]
+            for i in range(1, bounds.__len__()):
+                newBounds[2 * i - 1] = int((bounds[i - 1] + bounds[i]) / 2)
+                newBounds[2 * i] = bounds[i]
+
+            return getRandomPrimeInteger(newBounds)
+
+        def isPrime(x):
+            count = 0
+            for i in range(int(x / 2)):
+                if x % (i + 1) == 0:
+                    count = count + 1
+            return count == 1
+
+        bounds = [low, high]
+        # Gets 1 prime number from the range
+        for i in range(1):
+            boundsError = discord.Embed(title="Bounds Error",
+                                        description="Sorry, it appears I was not made to handle your cryptographical needs. Please try a low below 2^32 and a high below 2^64",
+                                        color=0xC73333
+                                        )
+            if low >= 1048576 or high >= 1048576:
+                await ctx.channel.send(embed=boundsError)
+                break
+            x = getRandomPrimeInteger(bounds)
+            primeEmbed = discord.Embed(title="Random Prime Number",
+                                       description=x,
+                                       color=0xB87DDF
+                                       )
+            await ctx.channel.send(embed=primeEmbed)
+
+    elif type.lower() == "odd":
+        odd = ran % 2
+        if odd == 1:
+            oddEmbed = discord.Embed(title="Random Odd Number", description=ran, color=0xB87DDF)
+            await ctx.channel.send(embed=oddEmbed)
+
+        else:
+            ran += 1
+            oddEmbed = discord.Embed(title="Random Odd Number", description=ran, color=0xB87DDF)
+            await ctx.channel.send(embed=oddEmbed)
+    elif type.lower() == "even":
+        even = ran % 2
+        if even == 0:
+            evenEmbed = discord.Embed(title="Random Even Number", description=ran, color=0xB87DDF)
+            await ctx.channel.send(embed=evenEmbed)
+        else:
+            ran += 1
+            evenEmbed = discord.Embed(title="Random Even Number", description=ran, color=0xB87DDF)
+            await ctx.channel.send(embed=evenEmbed)
+
 
 
 @generate.command()  # Random YouTube Video Generator - Gives a random YouTube video
