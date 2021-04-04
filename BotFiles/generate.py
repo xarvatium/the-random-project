@@ -12,7 +12,8 @@ import json  # Used for parsing the last.fm API responses
 from time import time  # Used for getting the current time to avoid rate limiting
 from pymongo import MongoClient
 import numpy as np
-
+from PyDictionary import PyDictionary
+from random_word import RandomWords
 
 
 
@@ -44,6 +45,9 @@ bot = commands.Bot(command_prefix="%", help_command=None)
 # Set a couple of variables that need to be global and persistent for random song
 lastfm_update = 0
 lastfm_tracklist = []
+
+# Random Word global variables
+randomWordUpdate = 0
 
 
 @bot.event  # Sets status on start and prints that it's logged in
@@ -396,3 +400,36 @@ async def image(ctx, *text: str):
                                          description="Sorry! I encountered an error somewhere along the way. (Did you include a __**valid**__ subreddit to search?)",
                                          color=0xC73333)
             await ctx.channel.send(embed=invalidError)
+
+
+@generate.command()
+async def word(ctx):
+    import random
+
+    dictionary = PyDictionary()
+
+    while True:
+        try:
+            ranWord = RandomWords()
+            word = ranWord.get_random_word(hasDictionaryDef="true")
+            print(word)
+            meaning = dictionary.meaning(word)
+            synonyms = dictionary.synonym(word)
+            antonyms = dictionary.antonym(word)
+
+            break
+        except Exception:
+            pass
+
+    cleanMeaning = str(meaning).replace('{', '').replace('[', '').replace(']', '').replace('}', '').replace("'", '')
+    cleanSyns = str(synonyms).replace('[', '').replace(']', '').replace("'", '')
+    cleanAnt = str(antonyms).replace('[', '').replace(']', '').replace("'", '')
+
+    wordEmbed = discord.Embed(title=f"Random Word - {word.capitalize()}",
+                              description=f"{cleanMeaning}\n",
+                              color=0xB87DDF)
+    wordEmbed.add_field(name="Synonyms",
+                        value=cleanSyns)
+    wordEmbed.add_field(name="Antonyms",
+                        value=cleanAnt)
+    await ctx.channel.send(embed=wordEmbed)
