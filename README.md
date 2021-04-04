@@ -21,6 +21,8 @@ Looking for a list of commands? Go to the [Bot Files](https://github.com/xarvati
 - [x] Added a random song generator
 - [x] Add an r/all puller for only channels marked nsfw (with a possibility for ignoring nsfw posts in sfw channels)
 - [x] Add an Imgur feature that draws from galleries (nsfw feature in development)
+- [x] Add a word generator with definitions
+- [x] Add a Nth digit in the Pi/Fibonacci sequence
 - [ ] Maybe add a random Urban Dictionary definition for channels marked nsfw(?)
 - [ ] Add automated testing to make error catching easier in beta
 - [ ] Add database support with custom prefixes (sort of functions, still in the works)

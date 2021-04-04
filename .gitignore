@@ -4,3 +4,4 @@ BotFiles/config.json
 __pycache__
 BotFiles/configExample.json
 .venv
+BotFiles/words/
