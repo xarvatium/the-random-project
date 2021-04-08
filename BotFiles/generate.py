@@ -1,22 +1,21 @@
-import wikipedia  # Used for the Wikipedia API
-import discord  # Used for Discord's API
-import praw  # Used to parse Reddit data
-from imgurpython import ImgurClient  # Used for Imgur's API
+import json  # Used for parsing the last.fm API responses
+import os  # Used to find specific files in various different commands
 from random import randint, choice  # Used for the homebrew generators
+from time import time  # Used for getting the current time to avoid rate limiting
+
+import discord  # Used for Discord's API
+import numpy as np
+import praw  # Used to parse Reddit data
+import requests  #
+import wikipedia  # Used for the Wikipedia API
+from PIL import Image  # Pillow, used for the image generator in ;generate color
+from PyDictionary import PyDictionary
 from discord.ext import commands  # Used to have commands in the bot
 from googleapiclient.discovery import build  # Used for parsing YouTube API requests
-from PIL import Image  # Pillow, used for the image generator in ;generate color
-import os  # Used to find specific files in various different commands
-import requests  #
-import json  # Used for parsing the last.fm API responses
-from time import time  # Used for getting the current time to avoid rate limiting
+from imgurpython import ImgurClient  # Used for Imgur's API
 from pymongo import MongoClient
-import numpy as np
-from PyDictionary import PyDictionary
 from random_word import RandomWords
-
-
-
+from youtube_search import YoutubeSearch
 
 mongoclient = MongoClient('mongodb://localhost:27017')
 
@@ -39,7 +38,7 @@ def generate_config_reload():
 #     return commands.when_mentioned_or(prefix)(bot, message)
 
 
-bot = commands.Bot(command_prefix=";", help_command=None)
+bot = commands.Bot(command_prefix="%", help_command=None)
 
 
 # Set a couple of variables that need to be global and persistent for random song
@@ -92,8 +91,10 @@ async def article(ctx):
     try:
         await ctx.channel.send(embed=wikiEmbed)
         print("Sent Wiki Article")
-    except discord.Forbidden:
-        await ctx.channel.send("The article you requested had a disambiguation, please try again.")
+    except:
+        errorEmbed = discord.Embed(title="Error:",
+                                   description="It appears the page I found doesn't exist, please try again.")
+        await ctx.channel.send(embed=errorEmbed)
 
 
 @generate.command()  # Random Number Generator - Generates a random number
@@ -185,8 +186,6 @@ async def number(ctx, low: int = 0, high: int = 100, type=None):
 async def video(ctx):
     import random
     # Defines the variables to be used
-    youtubeApiServiceName = 'youtube'
-    youtubeApiVersion = "v3"
     prefix = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
               'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
               'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
@@ -196,32 +195,16 @@ async def video(ctx):
         'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
     ]
 
-    # This is what it uses to search
-    def youtube_search():
-
-        # Giving my API Key and Developer Key to Google's API
-        youtube = build(youtubeApiServiceName, youtubeApiVersion, developerKey=config['ytApiKey'])
-
-        # This is the actual code that searches YouTube and gives 5 results back, and chooses one
-        searchResponse = youtube.search().list(
-            q=random.choice(prefix) + str(random.randint(0, 9999)) + random.choice(postfix),
-            part='snippet',
-            maxResults=1
-        ).execute()
-
-        videos = []
-
-        # This is the For statement that looks for actual YouTube videos and not just strings
-        for search_result in searchResponse.get('items', []):
-            if search_result['id']['kind'] == 'youtube#video':
-                videos.append('%s' % (search_result['id']['videoId']))
-        return videos[random.randint(0, 0)]
-
     # The portion that is sent to Discord, with the base URL preceding the search results
     attempts = 0
     while attempts < 10:  # Due to a strange error, I have it set to iterate 10 times until it succeeds
         try:
-            await ctx.channel.send("https://youtube.com/watch?v="+youtube_search())
+            videos = YoutubeSearch(random.choice(prefix) + str(random.randint(0, 9999)) + random.choice(postfix),
+                                   max_results=10,
+                                   ).to_dict()
+            ranVid = random.choice(videos)
+            ytLink = "https://www.youtube.com/watch?v=" + ranVid['id']
+            await ctx.channel.send(ytLink)
             print("Sent YT video")
             break
         except IndexError:
@@ -404,8 +387,6 @@ async def image(ctx, *text: str):
 
 @generate.command()
 async def word(ctx):
-    import random
-
     dictionary = PyDictionary()
 
     while True:
