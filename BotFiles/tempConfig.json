@@ -1,0 +1,23 @@
+{
+    "lastFmKey": "[API KEY HERE]",
+    "lastFmUA": "User-Agent (User Agent)",
+    "discordToken": "[Discord Token]",
+    "bannedWords": [
+        "word1",
+        "word2",
+        "banned word"
+    ],
+    "developers": {
+        "0123456789": "User#1234"
+    },
+    "reddit": {
+        "clientID": "[clientID]",
+        "clientSecret": "[clientSecret]",
+        "user_agent": "User Agent [/u/username]"
+    },
+    "imgur": {
+        "imgurID": "[App ID]",
+        "imgurSecret": "[App Secret]",
+        "Authorization": "Client-ID [App ID]"
+    }
+}
