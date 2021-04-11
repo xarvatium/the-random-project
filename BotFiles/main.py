@@ -1,9 +1,3 @@
-# ---------------------------------------
-# Made by Xarvatium#6561 with support from David J Horine#6457 and mdp189#8180
-# --My Socials--
-# Github: https://github.com/xarvatium
-# ---------------------------------------
-
 import asyncio
 from generate import *
 from pymongo import MongoClient

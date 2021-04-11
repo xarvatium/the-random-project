@@ -5,3 +5,4 @@ __pycache__
 BotFiles/configExample.json
 .venv
 BotFiles/words/
+BotFiles/update-start-manager.sh
