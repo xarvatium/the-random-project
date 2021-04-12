@@ -257,6 +257,34 @@ async def pi(ctx, num: int):
                                 )
         await ctx.channel.send(embed=piError)
 
+
+@bot.command()
+async def kanye(ctx):
+    response = json.loads(requests.get("https://api.kanye.rest").text)
+    kanyeEmbed = discord.Embed(title="Your Kanye Quote:",
+                               description=response['quote'],
+                               color=0xB87DDF)
+    kanyeEmbed.set_footer(text="Generated with the kanye.rest API")
+    await ctx.channel.send(embed=kanyeEmbed)
+
+
+@bot.command()
+async def dog(ctx):
+    response = json.loads(requests.get("https://dog.ceo/api/breeds/image/random").text)
+    dogEmbed = discord.Embed(title="I fetched this dog for you 🦴",
+                             color=0xB87DDF)
+    dogEmbed.set_image(url=f"{response['message']}")
+    dogEmbed.set_footer(text="Generated with the Dog CEO API")
+    await ctx.channel.send(embed=dogEmbed)
+
+@bot.command()
+async def fox(ctx):
+    response = json.loads(requests.get("https://randomfox.ca/floof/").text)
+    foxEmbed = discord.Embed(title="I found this image of a fox!",
+                             color=0xB87DDF)
+    foxEmbed.set_image(url=f"{response['image']}")
+    foxEmbed.set_footer(text="Generated with the randomfox.ca API")
+    await ctx.channel.send(embed=foxEmbed)
 # /\ General Purpose Commands /\
 
 # \/ Raised Permissions Commands \/

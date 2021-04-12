@@ -38,7 +38,7 @@ def generate_config_reload():
 #     return commands.when_mentioned_or(prefix)(bot, message)
 
 
-bot = commands.Bot(command_prefix=";", help_command=None)
+bot = commands.Bot(command_prefix="%", help_command=None)
 
 
 # Set a couple of variables that need to be global and persistent for random song
@@ -414,3 +414,13 @@ async def word(ctx):
     wordEmbed.add_field(name="Antonyms",
                         value=cleanAnt)
     await ctx.channel.send(embed=wordEmbed)
+
+
+@generate.command()
+async def fact(ctx):
+    response = json.loads(requests.get("https://uselessfacts.jsph.pl/random.json?language=en").text)
+    factEmbed = discord.Embed(title="Your Fact:",
+                              description=response['text'],
+                              color=0xB87DDF)
+    factEmbed.set_footer(text=f"Source - {response['source']}")
+    await ctx.channel.send(embed=factEmbed)
