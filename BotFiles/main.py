@@ -277,6 +277,7 @@ async def dog(ctx):
     dogEmbed.set_footer(text="Generated with the Dog CEO API")
     await ctx.channel.send(embed=dogEmbed)
 
+
 @bot.command()
 async def fox(ctx):
     response = json.loads(requests.get("https://randomfox.ca/floof/").text)
@@ -285,6 +286,52 @@ async def fox(ctx):
     foxEmbed.set_image(url=f"{response['image']}")
     foxEmbed.set_footer(text="Generated with the randomfox.ca API")
     await ctx.channel.send(embed=foxEmbed)
+
+
+@bot.command()
+async def cat(ctx):
+    response = json.loads(requests.get("https://some-random-api.ml/img/cat").text)
+    catEmbed = discord.Embed(title="I found this image of a cat!",
+                             color=0xB87DDF)
+    catEmbed.set_image(url=f"{response['link']}")
+    await ctx.channel.send(embed=catEmbed)
+
+
+@bot.command()
+async def panda(ctx):
+    response = json.loads(requests.get("https://some-random-api.ml/img/panda").text)
+    pandaEmbed = discord.Embed(title="I found this image of a panda!",
+                             color=0xB87DDF)
+    pandaEmbed.set_image(url=f"{response['link']}")
+    await ctx.channel.send(embed=pandaEmbed)
+
+
+@bot.command()
+async def redpanda(ctx):
+    response = json.loads(requests.get("https://some-random-api.ml/img/red_panda").text)
+    redpandaEmbed = discord.Embed(title="I found this image of a red panda!",
+                             color=0xB87DDF)
+    redpandaEmbed.set_image(url=f"{response['link']}")
+    await ctx.channel.send(embed=redpandaEmbed)
+
+
+@bot.command()
+async def birb(ctx):
+    response = json.loads(requests.get("https://some-random-api.ml/img/birb").text)
+    birbEmbed = discord.Embed(title="I found this image of a birb!",
+                             color=0xB87DDF)
+    birbEmbed.set_image(url=f"{response['link']}")
+    await ctx.channel.send(embed=birbEmbed)
+
+
+@bot.command()
+async def koala(ctx):
+    response = json.loads(requests.get("https://some-random-api.ml/img/koala").text)
+    koalaEmbed = discord.Embed(title="I found this image of a koala!",
+                             color=0xB87DDF)
+    koalaEmbed.set_image(url=f"{response['link']}")
+    await ctx.channel.send(embed=koalaEmbed)
+
 # /\ General Purpose Commands /\
 
 # \/ Raised Permissions Commands \/

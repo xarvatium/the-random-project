@@ -17,6 +17,9 @@ from pymongo import MongoClient
 from random_word import RandomWords
 from youtube_search import YoutubeSearch
 
+# Begin import grouping for ;encode
+import base64
+
 mongoclient = MongoClient('mongodb://localhost:27017')
 
 
@@ -77,6 +80,16 @@ async def generate(ctx):
                                   )
         await ctx.channel.send(embed=nullEmbed)  # Sends the error if there is no subcommand provided
 
+
+@bot.group()
+async def encode(ctx):
+    if ctx.invoked_subcommand is None:  # Checking if a subcommand is being called
+        nullEmbed = discord.Embed(title="Error",
+                                  description="Please include what to encode. If you don't know what this is"
+                                              ", use the ;help command!",
+                                  color=0xC73333
+                                  )
+        await ctx.channel.send(embed=nullEmbed)  # Sends the error if there is no subcommand provided
 
 @generate.command()  # Random Wikipedia article Generator - Generates a random wikipedia article
 async def article(ctx):
