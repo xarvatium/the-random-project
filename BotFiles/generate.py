@@ -38,7 +38,7 @@ def generate_config_reload():
 #     return commands.when_mentioned_or(prefix)(bot, message)
 
 
-bot = commands.Bot(command_prefix="%", help_command=None)
+bot = commands.Bot(command_prefix=";", help_command=None)
 
 
 # Set a couple of variables that need to be global and persistent for random song
