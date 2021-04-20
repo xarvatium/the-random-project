@@ -189,45 +189,8 @@ async def roll(ctx, sides: int = 6):
         await ctx.channel.send(embed=dieEmbed)
 
 
-@bot.command() # Calculate Pi to the Nth digit using Chudnovsky's Algorithm
+@bot.command()  # Calculate Pi to the Nth digit using Chudnovsky's Algorithm
 async def pi(ctx, num: int):
-
-    #def sqrt(n, m):
-    #    m1 = 10 ** 16
-    #    m2 = float((n * m1) // m) / m1
-    #    b = (int(m1 * math.sqrt(m2)) * m) // m1
-    #    n_m = n * m
-    #    while True:
-    #        a = b
-    #        b = (b + n_m // b) // 2
-    #        if b == a:
-    #            break
-    #    return b
-    #
-    #def power(n):
-    #    if n == 0:
-    #        return 1
-    #    r = power(n // 2)
-    #    if n % 2 == 0:
-    #        return r * r
-    #    return r * r * 10
-    #
-    #def pi():
-    #    m = power(100000)
-    #    c = (640320 ** 3) // 24
-    #    n = 1
-    #    ak = m
-    #    asum = m
-    #    bsum = 0
-    #    while ak != 0:
-    #        ak *= -(6 * n - 5) * (2 * n - 1) * (6 * n - 1)
-    #        ak //= n * n * n * c
-    #        asum += ak
-    #        bsum += n * ak
-    #        n = n + 1
-    #        result = (426880 * sqrt(10005 * m, m) * m) // (13591409 * asum + 545140134 * bsum)
-    #        return result
-
     def compute_pi(n):
         decimal.getcontext().prec = n + 1
         C = 426880 * decimal.Decimal(10005).sqrt()
