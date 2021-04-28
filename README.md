@@ -1,3 +1,4 @@
+# [NOTICE] This repository has been archived, please use the GitLab repository for the most up-to-date releases --> https://gitlab.com/xarvatium/the-random-project
 # The Random Bot
 [![License](https://img.shields.io/badge/license-GNU-red)](LICENSE)
 [![Discord](https://img.shields.io/discord/756682912166051851?label=Development%20Discord)](https://discord.gg/3hry5EFuM4)
